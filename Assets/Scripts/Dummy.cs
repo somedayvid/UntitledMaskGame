@@ -11,8 +11,10 @@ public class DummyEnemy : MonoBehaviour, Enemy
     public void TakeDamage(int amount)
     {
         health -= amount;
+        Debug.Log("Enemy has taken: " + amount + "damage");
         //Just set hp to zero if it will go negative
         if (health < 0) health = 0;
+
     }
     public void ResetDummy()
     {

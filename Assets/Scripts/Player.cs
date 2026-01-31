@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 public enum Mood
 {
+    Neutral,
     Angry,
     Sad,
     Happy,
@@ -18,12 +19,15 @@ public class Player : MonoBehaviour
     private int maxHealth = 100;
     private Mood mood;
     public List<Card> hand = new List<Card>();
+    public DummyEnemy dumbass;
     private float GetDamageMultiplier()
     {
         switch (mood)
         {
             case Mood.Angry:
                 return 1.2f; 
+            case Mood.Neutral:
+                return 1f;
             default:
                 return 1f;
         }
@@ -36,6 +40,8 @@ public class Player : MonoBehaviour
         {
             
             case CardType.Attack:
+                print(card.damage);
+                print(GetDamageMultiplier());
                 int dmg = Mathf.RoundToInt(card.damage * GetDamageMultiplier());
                 enemy.TakeDamage(dmg);
                 break;
@@ -83,6 +89,9 @@ public class Player : MonoBehaviour
     void Start()
     {
         health = maxHealth;
+        Card temp = new Card();
+        DummyEnemy e = dumbass;
+        PlayCard(temp,e);
     }
 
     // Update is called once per frame
