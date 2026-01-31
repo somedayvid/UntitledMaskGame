@@ -185,9 +185,7 @@ public class Player : MonoBehaviour
         health = maxHealth;
         Debug.Log(isAlive());
         Card temp = new Card();
-        DummyEnemy e = dumbass;
         shield = 0;
-        PlayCard(temp,e);
     }
 
     public void ReorderHand()
