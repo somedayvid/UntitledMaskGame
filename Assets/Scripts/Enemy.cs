@@ -6,5 +6,6 @@ public interface Enemy
 {
     void TakeDamage(int amount);
     bool IsAlive();
+    void ResolveAction(Player player);
 }
 
