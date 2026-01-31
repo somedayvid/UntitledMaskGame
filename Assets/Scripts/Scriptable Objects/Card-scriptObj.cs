@@ -19,7 +19,7 @@ public class Card : ScriptableObject
     }
 
     public int ID;
-    public Mood cardMood;
+    public Mood moodType;
     public string cardName;
 
     // define your card properties here
