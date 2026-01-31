@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     private int maxHealth = 100;
     private Mood mood;
     public List<Card> hand = new List<Card>();
+    public DummyEnemy dumbass;
     private float GetDamageMultiplier()
     {
         switch (mood)
@@ -83,6 +84,9 @@ public class Player : MonoBehaviour
     void Start()
     {
         health = maxHealth;
+        Card temp = new Card();
+        DummyEnemy e = dumbass;
+        PlayCard(temp,e);
     }
 
     // Update is called once per frame
