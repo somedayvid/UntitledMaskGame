@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9edef0148e277954081f8ef4018aa182, type: 3}
+  m_Name: mask 4
+  m_EditorClassIdentifier: 
+  maskId: mask_04
+  displayName: Dian Wei
+  shortDesc: 
+  icon: {fileID: 21300000, guid: 57743670c661e1c4da220c8b56e43ce5, type: 3}
