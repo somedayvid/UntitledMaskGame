@@ -12,24 +12,24 @@ Defemse
 Power
  */
 
-public enum CardAffinity
+public enum CardType
 {
-    Angry,
-    Sad,
-    Happy,
-    SunWukong,
+    Attack,
+    Defense,
+    Power
 }
 
 public class Card : ScriptableObject
 {
     public string cardName;
-    public CardAffinity cardType;
+    public CardType cardType;
+    public int damage = 5;
+    public int shield = 5;
 }
 
 
 public class Cards : MonoBehaviour
 {
-    public List<Card> hand = new List<Card>();
     // Start is called before the first frame update
     void Start()
     {
