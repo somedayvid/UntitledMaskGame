@@ -67,7 +67,7 @@ public class Card
                 break;
             case (CardEffect.SmallShieldPotion):
                 chi = 1;
-                shield = 5;
+                shield = 10;
                 cardType = CardType.Defense;
                 break;
             case (CardEffect.ShieldPotion):
@@ -81,6 +81,11 @@ public class Card
                 cardType = CardType.Defense;
                 break;
             case (CardEffect.OrientalDaggerRitual):
+                Card temp = new Card();
+                temp.cardEffect = CardEffect.OrientalDagger;
+                DeckManager.GetInstance().AddCard(temp);
+                DeckManager.GetInstance().AddCard(temp);
+                DeckManager.GetInstance().AddCard(temp);
                 break;
             case (CardEffect.OrientalDagger):
                 chi = 0;
@@ -93,6 +98,10 @@ public class Card
             case (CardEffect.GinsengRoot):
                 break;
             case (CardEffect.HeavenlyInsight):
+                DeckManager.GetInstance().Draw();
+                DeckManager.GetInstance().Draw();
+                DeckManager.GetInstance().Draw();
+          
                 break;
             //case (CardEffect.MandateOfHeaven):
             //    break;
