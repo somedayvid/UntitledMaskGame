@@ -180,7 +180,7 @@ public class Card
 
                 case CardEffect.Pills:
                     return "Mystic Pills";
-                default:
+                default:    
                     return "-";
             }
         }
@@ -199,6 +199,6 @@ public class Card
     public virtual void UseCard()
     {
         ResolveEffect();
-        Debug.Log($"Using card: {cardName} with ID: {ID}");
+        Debug.Log($"Using card: {GetName()} with ID: {ID}");
     }
 }

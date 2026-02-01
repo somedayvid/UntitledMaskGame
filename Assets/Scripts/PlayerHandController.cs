@@ -71,9 +71,8 @@ public class PlayerHandController : MonoBehaviour
         tmep[1].GetComponent<TextMeshProUGUI>().text = card.GetName();
         tmep[2].GetComponent<TextMeshProUGUI>().text = card.GetCost().ToString();
         tmep[3].GetComponent<TextMeshProUGUI>().text = card.GetEffect();
-        Card tempCard = new Card();
 
-        return AddCardToHand(tempCard, cardImg); 
+        return AddCardToHand(card, cardImg); 
     }
 
     public void DrawStartingHand()
@@ -206,17 +205,13 @@ public class PlayerHandController : MonoBehaviour
 
     public void ReorderHand()
     {
-        if (hand.Count > 0)
+        if (handTrans.childCount > 0)
         {
             float handWidth = Mathf.Abs(rightHandBound.transform.position.x) + Mathf.Abs(leftHandBound.transform.position.x);
-            //Vector2 handCenter = new Vector2(0, leftHandBound.transform.position.y);
-
-            float negSwitch = 1.0f;
 
             for (int i = 0; i < handTrans.childCount; i++)
             {
                 handTrans.GetChild(i).transform.position = Camera.main.WorldToScreenPoint(new Vector2(leftHandBound.transform.position.x + handWidth/hand.Count * i, leftHandBound.transform.position.y));
-                //negSwitch*=-1;
             }
             selectedIndex = 0;
             previousSelectedIndex = selectedIndex;
@@ -232,4 +227,21 @@ public class PlayerHandController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftArrow)) SelectPrev();
         if (Input.GetKeyDown(KeyCode.Return)) PlaySelected();
     }
+
+    //private void Update()
+    //{
+    //    if (transform.position == nextPos)
+    //    {
+    //        return;
+    //    }
+
+    //    CardSmoothFollow(nextPos);
+    //}
+
+    //private void CardSmoothFollow(Vector3 newPos)
+    //{
+    //    Vector3 desiredPositon = newPos;
+    //    Vector3 smoothedPosition = Vector3.SmoothDamp(transform.position, desiredPositon, ref velocity, smoothSpeed);
+    //    transform.position = smoothedPosition;
+    //}
 }

@@ -54,14 +54,14 @@ public class DeckManager : MonoBehaviour
         discardDeck.Clear();
     }
 
-    void Start()
+    void Awake()
     {
         Card newCard = new Card();
         newCard.cardEffect = CardEffect.DrunkenFist;
         AddCard(newCard);
-        Card newCard1 = new Card();
-        newCard1.cardEffect = CardEffect.Momentum;
-        AddCard(newCard1);
+        AddCard(newCard);
+        AddCard(newCard);
+        AddCard(newCard);
         Card newCard2 = new Card();
         newCard2.cardEffect = CardEffect.RockThrow;
         AddCard(newCard2);
@@ -69,7 +69,7 @@ public class DeckManager : MonoBehaviour
         AddCard(newCard2);
         AddCard(newCard2);
         AddCard(newCard2);
-        AddCard(newCard2);
+
 
         shuffle();
     }
