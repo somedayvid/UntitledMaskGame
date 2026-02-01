@@ -3252,6 +3252,7 @@ MonoBehaviour:
   player: {fileID: 1425976159}
   dummy: {fileID: 0}
   hpText: {fileID: 644671114}
+  shieldText: {fileID: 623313430}
 --- !u!114 &1204811308
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4106,6 +4107,7 @@ MonoBehaviour:
   player: {fileID: 0}
   dummy: {fileID: 1368908023}
   hpText: {fileID: 1977357657}
+  shieldText: {fileID: 1852578665}
 --- !u!114 &1396361945
 MonoBehaviour:
   m_ObjectHideFlags: 0

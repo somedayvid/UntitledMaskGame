@@ -8,10 +8,13 @@ public class UnitBarsUI : MonoBehaviour
     [SerializeField] private Image healthFill;
     [SerializeField] private Image shieldFill; // optional for Dummy
 
+
     public Player player;
     public DummyEnemy dummy;
 
     public TextMeshProUGUI hpText;
+    public TextMeshProUGUI shieldText;
+
 
 
     private void Start()
@@ -28,6 +31,20 @@ public class UnitBarsUI : MonoBehaviour
 
             if (hpText != null)
                 hpText.text = $"{player.Health}/{player.MaxHealth}";
+
+            if (shieldText != null)
+            {
+                if (player.Shield > 0)
+                {
+                    shieldText.gameObject.SetActive(true);
+                    shieldText.text = $"{player.Shield}";
+                }
+                else
+                {
+                    shieldText.gameObject.SetActive(false);
+                }
+            }
+
             return;
         }
 
@@ -40,8 +57,13 @@ public class UnitBarsUI : MonoBehaviour
 
             if (hpText != null)
                 hpText.text = $"{dummy.Health}/{dummy.MaxHealth}";
+
+            if (shieldText != null)
+                shieldText.gameObject.SetActive(false);
+
             return;
         }
+
     }
 
 

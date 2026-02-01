@@ -91,6 +91,15 @@ public class DeckManager : MonoBehaviour
         AddCard(newCard2);
         AddCard(newCard2);
 
+        Card defend = new Card();
+        defend.cardType = CardType.Defense;
+        defend.shield = 8;    
+        defend.chi = 1;       
+        defend.cardName = "Defend";
+        AddCard(defend);
+        AddCard(defend);
+        AddCard(defend);
+        AddCard(defend);
 
         shuffle();
     }
