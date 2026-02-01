@@ -27,7 +27,12 @@ public class BattleManager : MonoBehaviour
     [Header("Core References")]
     [SerializeField] private Player player;
 
+    [Header("Enemies (Inspector-visible)")]
     [SerializeField] private List<MonoBehaviour> enemyBehaviours = new();
+
+    [Header("Mask Manager")]
+    [SerializeField] private MaskManager maskManager;
+
 
     [Header("Mask UI")]
     [SerializeField] private MaskPanelController maskPanel;
@@ -47,6 +52,8 @@ public class BattleManager : MonoBehaviour
 
     // NEW: extra turn is requested by CombatManagerFacade (e.g., Er Lang Shen card)
     private bool extraTurnPending = false;
+
+    // Debug stuff
 
     private void Awake()
     {
@@ -82,7 +89,8 @@ public class BattleManager : MonoBehaviour
 
         // NEW: facade initializes external deck/discard/exile and draws starting hand, etc.
         if (combat != null)
-            combat.OnBattleStart(equippedMasks, activeMaskIndex);
+            combat.OnBattleStart(GetEquippedMasksSnapshot(), GetActiveIndex());
+
 
         EnterPlayerTurn();
     }
@@ -95,7 +103,8 @@ public class BattleManager : MonoBehaviour
 
         // NEW: facade handles turn-start triggers (refill mana, draw, ZhongKui negative cards, etc.)
         if (combat != null)
-            combat.OnPlayerTurnStart(equippedMasks, activeMaskIndex, TurnNumber);
+            combat.OnPlayerTurnStart(GetEquippedMasksSnapshot(), GetActiveIndex(), TurnNumber);
+
 
         Debug.Log($"--- Player Turn {TurnNumber} --- ActiveMask={GetActiveMaskName()}");
 
@@ -111,13 +120,20 @@ public class BattleManager : MonoBehaviour
         if (State != BattleState.PlayerTurn) return false;
         if (player == null) return false;
         if (card == null) return false;
+        if(target == null)
+        {
+            target = GetFirstAliveEnemy();
+        }
+        
 
         bool success;
 
         // NEW: delegate play logic to facade
         // (If combat is missing, fallback to old behavior.)
+
         if (combat != null)
-            success = combat.TryPlayCard(equippedMasks, activeMaskIndex, card, target);
+            success = combat.TryPlayCard(GetEquippedMasksSnapshot(), GetActiveIndex(), card, target);
+
         else
             success = player.PlayCard(card, target);
 
@@ -162,7 +178,8 @@ public class BattleManager : MonoBehaviour
 
         // NEW: facade handles end-of-turn triggers (Kitsune foxies act, etc.)
         if (combat != null)
-            combat.OnPlayerTurnEnd(equippedMasks, activeMaskIndex, TurnNumber);
+            combat.OnPlayerTurnEnd(GetEquippedMasksSnapshot(), GetActiveIndex(), TurnNumber);
+
 
         // NEW: handle extra turn request (skip EnemyTurn if requested)
         if (extraTurnPending)
@@ -205,14 +222,14 @@ public class BattleManager : MonoBehaviour
         TurnNumber++;
         EnterPlayerTurn();
     }
-
     private void RotateMaskAfterSuccessfulPlay()
     {
-        int old = activeMaskIndex;
-        activeMaskIndex = (activeMaskIndex + 1) % 3;
-
-        Debug.Log($"[BattleManager] Mask rotate: {old} -> {activeMaskIndex} | ActiveMask={GetActiveMaskName()}");
+        if (maskManager == null) return;
+        int old = maskManager.ActiveIndex;
+        maskManager.RotateActive();
+        Debug.Log($"[BattleManager] Mask rotate: {old} -> {maskManager.ActiveIndex}");
     }
+
 
     private void CheckVictoryDefeat()
     {
@@ -251,11 +268,32 @@ public class BattleManager : MonoBehaviour
         }
         return null;
     }
-
     private string GetActiveMaskName()
     {
+        if (maskManager != null)
+        {
+            var m = maskManager.GetActiveMask();
+            return m != null ? $"{m.displayName} ({m.maskId})" : "None";
+        }
+
         if (equippedMasks == null || equippedMasks.Length < 3) return "None";
-        var m = equippedMasks[Mathf.Clamp(activeMaskIndex, 0, 2)];
-        return m != null ? m.displayName : "None";
+        var mm = equippedMasks[Mathf.Clamp(activeMaskIndex, 0, 2)];
+        return mm != null ? mm.displayName : "None";
     }
+
+    private MaskData[] GetEquippedMasksSnapshot()
+    {
+        return new MaskData[]
+        {
+        maskManager != null ? maskManager.GetQueueMask(0) : null,
+        maskManager != null ? maskManager.GetQueueMask(1) : null,
+        maskManager != null ? maskManager.GetQueueMask(2) : null,
+        };
+    }
+
+    private int GetActiveIndex()
+    {
+        return maskManager != null ? maskManager.ActiveIndex : 0;
+    }
+
 }

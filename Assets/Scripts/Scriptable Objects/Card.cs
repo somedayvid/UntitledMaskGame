@@ -124,7 +124,7 @@ public class Card
     }
     public virtual void UseCard()
     {
-        resolveEffect();
+        ResolveEffect();
         Debug.Log($"Using card: {cardName} with ID: {ID}");
         // Implement card effect logic here
     }
