@@ -58,7 +58,7 @@ public class Card
     //example I will try something - Ricky
     // can use abstract or virtual. I will use virtual for now
     // see RedMask.cs for example of override (i just made this. change it however you want)
-    void resolveEffect()
+    void ResolveEffect()
     {
         switch (cardEffect)
         {

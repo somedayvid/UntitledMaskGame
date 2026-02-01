@@ -26,7 +26,7 @@ public class HandWindow : EditorWindow
             if (GUILayout.Button("Add Prefab To Hand"))
             {
                 Undo.RecordObject(hand, "Add Card To Hand");
-                hand.AddCardFromPrefab(cardPrefab);
+                //hand.AddCardFromPrefab(cardPrefab);
                 EditorUtility.SetDirty(hand);
             }
 
