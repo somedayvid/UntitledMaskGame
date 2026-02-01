@@ -15,7 +15,6 @@ public enum CardEffect
     SmallShieldPotion,
     ShieldPotion,
     OrientalMedicineJug, 
-    SubmachineGun,
     OrientalDaggerRitual,
     OrientalDagger,
     Meditate,
@@ -30,6 +29,7 @@ public enum CardEffect
     Momentum,
     RockThrow,
     Pills,
+    SubmachineGun,
 }
 //[CreateAssetMenu(fileName = "Card", menuName = "ScriptableObjects/Card", order = 1)]
 
@@ -111,6 +111,10 @@ public class Card
                 chi = 0;
                 break;
             case (CardEffect.Pills):
+                break;
+            case CardEffect.SubmachineGun:
+                damage = 10;
+                chi = 0;
                 break;
         }
     }
