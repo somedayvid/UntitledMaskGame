@@ -18,7 +18,7 @@ public class Player : MonoBehaviour
     [SerializeField] private int maxHealth = 100;
     [SerializeField] private int health;
     [SerializeField] private int shield;
-
+    [SerializeField] private int strength;
     [Header("State")]
     [SerializeField] private Mood mood = Mood.Neutral;
 
@@ -34,6 +34,7 @@ public class Player : MonoBehaviour
     {
         health = maxHealth;
         shield = 0;
+        strength = 0;
     }
 
     public bool IsAlive()
@@ -82,7 +83,7 @@ public class Player : MonoBehaviour
         {
             if (enemy == null || !enemy.IsAlive()) return false;
 
-            int dmg = Mathf.RoundToInt(card.damage * GetDamageMultiplier());
+            int dmg = Mathf.RoundToInt((strength+card.damage) * GetDamageMultiplier());
             enemy.TakeDamage(dmg);
         }
         else if (card.cardType == CardType.Defense)
