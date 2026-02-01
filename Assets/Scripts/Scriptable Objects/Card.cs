@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum CardType
@@ -37,8 +35,6 @@ public enum CardEffect
 
 public class Card
 {
-    //change this accordingly
-    
     public int ID;
     public Mood moodType;
     public string cardName;
@@ -57,14 +53,13 @@ public class Card
     //example I will try something - Ricky
     // can use abstract or virtual. I will use virtual for now
     // see RedMask.cs for example of override (i just made this. change it however you want)
-    void resolveEffect()
+    void ResolveEffect()
     {
         switch (cardEffect)
         {
-            case (CardEffect.DrunkenFist):
+            case CardEffect.DrunkenFist:
                 int rng = Random.Range(0, 2);
-                if (rng == 0) damage = 0;
-                else damage = 12;
+                damage = (rng == 0) ? 0 : 12;
                 break;
             case (CardEffect.PalmStrike):
                 damage = 5;
@@ -119,12 +114,11 @@ public class Card
             case (CardEffect.Pills):
                 break;
         }
-
     }
+
     public virtual void UseCard()
     {
-        resolveEffect();
+        ResolveEffect();
         Debug.Log($"Using card: {cardName} with ID: {ID}");
-        // Implement card effect logic here
     }
 }

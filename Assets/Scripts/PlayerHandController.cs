@@ -1,10 +1,9 @@
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
-/// <summary>
-/// Owns player's hand (data + selection) and exposes "play selected card".
-///This is NOT the combat rules system. It only requests BattleManager to play.
-/// </summary>
 public class PlayerHandController : MonoBehaviour
 {
     [Header("Refs")]
@@ -12,26 +11,74 @@ public class PlayerHandController : MonoBehaviour
 
     [Header("Hand (Inspector-visible)")]
     [SerializeField] private int handLimit = 10;
-
-    // This list should be visible in Inspector.
-    // If it is NOT visible, your Card type is not serializable.
     [SerializeField] private List<Card> hand = new List<Card>();
+    [SerializeField] private List<Image> visualHand = new List<Image>();
 
     [Header("Selection")]
     [SerializeField] private int selectedIndex = 0;
+    [SerializeField] private int previousSelectedIndex = 0;
 
     [Header("Play Settings")]
-    [Tooltip("If true, PlaySelected will ask BattleManager to choose a default target.")]
     [SerializeField] private bool useDefaultTarget = true;
+    [SerializeField] private MonoBehaviour explicitTargetEnemy;
 
-    [Tooltip("Explicit target (if you don't want default targeting yet).")]
-    [SerializeField] private MonoBehaviour explicitTargetEnemy; 
+    [Header("Hand Positioning")]
+    [SerializeField] private GameObject leftHandBound;
+    [SerializeField] private GameObject rightHandBound;
+    [SerializeField] private GameObject handPivotPoint;
+    [SerializeField] private Transform handTrans;
+    [SerializeField] private Image prefab;
+    [SerializeField] private float bumpDistance = 15.0f;
 
     // --------- Public API ---------
-
     public IReadOnlyList<Card> Hand => hand;
+    public IReadOnlyList<Image> VisualHand => visualHand;
     public int HandLimit => handLimit;
     public int SelectedIndex => selectedIndex;
+
+    public int HandCount => hand != null ? hand.Count : 0;
+
+    private void Start()
+    {
+        for(int i = 0; i < 3; i++)
+        {
+            AddCardFromPrefab();
+        }
+        ReorderHand();
+    }
+
+    public bool AddCardFromPrefab()
+    {
+        //if (cardPrefab == null)
+        //{
+        //    Debug.LogWarning("[Hand] AddCardFromPrefab got null prefab.");
+        //    return false;
+        //}
+
+        //var info = cardPrefab.GetComponent<CardPrefabInfo>();
+        //if (info == null)
+        //{
+        //    Debug.LogError($"[Hand] Prefab '{cardPrefab.name}' missing CardPrefabInfo component.");
+        //    return false;
+        //}
+
+        //Card created = info.CreateCardInstance();
+
+        Image cardImg = Instantiate(prefab, handTrans);
+        Transform[] tmep = cardImg.GetComponentsInChildren<Transform>();
+        tmep[1].GetComponent<TextMeshProUGUI>().text = "Palm Strike";
+        tmep[2].GetComponent<TextMeshProUGUI>().text = "1";
+        tmep[3].GetComponent<TextMeshProUGUI>().text = "Deal 5 Damage";
+        Card tempCard = new Card();
+
+        return AddCardToHand(tempCard, cardImg); 
+    }
+
+    public bool RemoveFirstCard()
+    {
+        if (hand.Count == 0) return false;
+        return RemoveCardAt(0); 
+    }
 
     public Card GetSelectedCard()
     {
@@ -40,10 +87,7 @@ public class PlayerHandController : MonoBehaviour
         return hand[selectedIndex];
     }
 
-    /// <summary>
-    /// Add a card into hand (enforces hand limit).
-    /// </summary>
-    public bool AddCardToHand(Card card)
+    public bool AddCardToHand(Card card, Image cardImg)
     {
         if (card == null) return false;
 
@@ -53,21 +97,19 @@ public class PlayerHandController : MonoBehaviour
             return false;
         }
 
+        visualHand.Add(Instantiate(prefab, transform));
         hand.Add(card);
 
-        // Keep selection valid
         selectedIndex = Mathf.Clamp(selectedIndex, 0, hand.Count - 1);
         return true;
     }
 
-    /// <summary>
-    /// Remove a card by index (safe).
-    /// </summary>
     public bool RemoveCardAt(int index)
     {
         if (index < 0 || index >= hand.Count) return false;
 
         hand.RemoveAt(index);
+        visualHand.RemoveAt(index);
 
         if (hand.Count == 0)
         {
@@ -81,14 +123,20 @@ public class PlayerHandController : MonoBehaviour
         return true;
     }
 
-    /// <summary>
-    /// Select next card (wrap).
-    /// Hook to Left/Right arrows or UI buttons.
-    /// </summary>
+    private void Selection()
+    {
+        Transform cur = handTrans.GetChild(selectedIndex);
+        Transform pre = handTrans.GetChild(previousSelectedIndex);
+        pre.position = new Vector2(pre.position.x, pre.position.y - bumpDistance);
+        cur.position = new Vector2(cur.position.x, cur.position.y + bumpDistance);
+        previousSelectedIndex = selectedIndex;
+    }
+
     public void SelectNext()
     {
         if (hand.Count == 0) return;
         selectedIndex = (selectedIndex + 1) % hand.Count;
+        Selection();
     }
 
     public void SelectPrev()
@@ -96,12 +144,9 @@ public class PlayerHandController : MonoBehaviour
         if (hand.Count == 0) return;
         selectedIndex--;
         if (selectedIndex < 0) selectedIndex = hand.Count - 1;
+        Selection();
     }
 
-    /// <summary>
-    /// Main play entry (bind this to a UI button).
-    /// It will call BattleManager.TryPlayCard(...) and only remove from hand if success.
-    /// </summary>
     public void PlaySelected()
     {
         if (battleManager == null)
@@ -130,10 +175,32 @@ public class PlayerHandController : MonoBehaviour
         if (success)
         {
             RemoveCardAt(selectedIndex);
+            ReorderHand();
         }
         else
         {
             Debug.Log("[Hand] Play failed (turn state / target / rules). Card not removed.");
+        }
+    }
+
+    public void ReorderHand()
+    {
+        if (hand.Count > 0)
+        {
+            float handWidth = Mathf.Abs(rightHandBound.transform.position.x) + Mathf.Abs(leftHandBound.transform.position.x);
+            //Vector2 handCenter = new Vector2(0, leftHandBound.transform.position.y);
+
+            float negSwitch = 1.0f;
+
+            for (int i = 0; i < handTrans.childCount; i++)
+            {
+                handTrans.GetChild(i).transform.position = Camera.main.WorldToScreenPoint(new Vector2(leftHandBound.transform.position.x + handWidth/hand.Count * i, leftHandBound.transform.position.y));
+                //negSwitch*=-1;
+            }
+            selectedIndex = 0;
+            previousSelectedIndex = selectedIndex;
+            Transform temp = handTrans.GetChild(selectedIndex);
+            temp.position = new Vector2(temp.position.x, temp.position.y + bumpDistance);
         }
     }
 
