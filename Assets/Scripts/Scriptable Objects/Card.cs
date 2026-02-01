@@ -7,7 +7,8 @@ public enum CardType
     Attack,
     Defense,
     Power,
-    Heal
+    Heal,
+    NegativeType
 }
 public enum CardEffect
 {
@@ -16,7 +17,7 @@ public enum CardEffect
     PalmStrike,
     SmallShieldPotion,
     ShieldPotion,
-    OrientalMedicineJug, 
+    OrientalMedicineJug,
     SubmachineGun,
     OrientalDaggerRitual,
     OrientalDagger,
@@ -38,7 +39,7 @@ public enum CardEffect
 public class Card
 {
     //change this accordingly
-    
+
     public int ID;
     public Mood moodType;
     public string cardName;

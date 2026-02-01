@@ -2,12 +2,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Step0 BattleManager (fits your current Player/Enemy/DummyEnemy code):
-/// - Owns turn flow: Setup -> PlayerTurn -> EnemyTurn -> ...
-/// - Player can play unlimited cards during PlayerTurn.
-/// - After each successful card play: rotate active mask index (0->1->2->0).
-/// - EnemyTurn: each alive enemy acts once via Enemy.ResolveAction(player).
-/// - Checks Victory/Defeat and locks the battle when finished.
+/// BattleManager = turn director (minimal changes):
+/// - Still owns turn flow: Setup -> PlayerTurn -> EnemyTurn -> ...
+/// - Still owns victory/defeat checks.
+/// - Still rotates active mask index after each successful play.
+/// 
+/// NEW (Step 1 of "2nd tier"):
+/// - Delegates combat resolution (mana/cost, mask hooks, deck/discard/exile, status, summon, extra turn request)
+///   to CombatManagerFacade.
+/// - Enemy still calls Enemy.ResolveAction(player) (Enemy.cs unchanged).
+/// - After each enemy action, we call combat.AfterEnemyAction(enemy) so Ski bleed etc can trigger.
 /// </summary>
 public class BattleManager : MonoBehaviour
 {
@@ -30,17 +34,23 @@ public class BattleManager : MonoBehaviour
 
     [Header("Mask Rotation (runtime)")]
     [SerializeField] private MaskData[] equippedMasks = new MaskData[3];
-
     [SerializeField] private int activeMaskIndex = 0;
+
+    [Header("Combat Facade (NEW)")]
+    [Tooltip("Handles mana/cost, deck/discard/exile, mask hooks, status, summons, extra turn requests.")]
+    [SerializeField] private CombatManagerFacade combat;
 
     public BattleState State { get; private set; } = BattleState.Setup;
     public int TurnNumber { get; private set; } = 1;
 
     private readonly List<Enemy> enemies = new();
 
+    // NEW: extra turn is requested by CombatManagerFacade (e.g., Er Lang Shen card)
+    private bool extraTurnPending = false;
+
     private void Awake()
     {
-        // Cache Enemy interface references
+        // Cache Enemy interface references (Enemy.cs unchanged)
         enemies.Clear();
         foreach (var mb in enemyBehaviours)
         {
@@ -51,6 +61,13 @@ public class BattleManager : MonoBehaviour
 
     private void Start()
     {
+        // Bind facade once at startup
+        if (combat != null)
+        {
+            combat.Bind(player, enemies);
+            combat.OnRequestExtraTurn += () => extraTurnPending = true;
+        }
+
         StartBattle();
     }
 
@@ -63,6 +80,10 @@ public class BattleManager : MonoBehaviour
         Debug.Log("=== Battle Start ===");
         Debug.Log($"ActiveMaskIndex={activeMaskIndex} | ActiveMask={GetActiveMaskName()}");
 
+        // NEW: facade initializes external deck/discard/exile and draws starting hand, etc.
+        if (combat != null)
+            combat.OnBattleStart(equippedMasks, activeMaskIndex);
+
         EnterPlayerTurn();
     }
 
@@ -71,6 +92,11 @@ public class BattleManager : MonoBehaviour
         if (State == BattleState.Victory || State == BattleState.Defeat) return;
 
         State = BattleState.PlayerTurn;
+
+        // NEW: facade handles turn-start triggers (refill mana, draw, ZhongKui negative cards, etc.)
+        if (combat != null)
+            combat.OnPlayerTurnStart(equippedMasks, activeMaskIndex, TurnNumber);
+
         Debug.Log($"--- Player Turn {TurnNumber} --- ActiveMask={GetActiveMaskName()}");
 
         CheckVictoryDefeat();
@@ -85,8 +111,14 @@ public class BattleManager : MonoBehaviour
         if (player == null) return false;
         if (card == null) return false;
 
-        // Player.PlayCard currently rejects if enemy is null or dead.
-        bool success = player.PlayCard(card, target);
+        bool success;
+
+        // NEW: delegate play logic to facade
+        // (If combat is missing, fallback to old behavior.)
+        if (combat != null)
+            success = combat.TryPlayCard(equippedMasks, activeMaskIndex, card, target);
+        else
+            success = player.PlayCard(card, target);
 
         if (!success) return false;
 
@@ -127,6 +159,19 @@ public class BattleManager : MonoBehaviour
     {
         if (State != BattleState.PlayerTurn) return;
 
+        // NEW: facade handles end-of-turn triggers (Kitsune foxies act, etc.)
+        if (combat != null)
+            combat.OnPlayerTurnEnd(equippedMasks, activeMaskIndex, TurnNumber);
+
+        // NEW: handle extra turn request (skip EnemyTurn if requested)
+        if (extraTurnPending)
+        {
+            extraTurnPending = false;
+            Debug.Log("[BattleManager] Extra turn granted! Staying in PlayerTurn.");
+            EnterPlayerTurn();
+            return;
+        }
+
         Debug.Log("--- End Player Turn -> Enemy Turn ---");
         State = BattleState.EnemyTurn;
 
@@ -144,8 +189,12 @@ public class BattleManager : MonoBehaviour
             if (e == null) continue;
             if (!e.IsAlive()) continue;
 
-            // Enemy acts once per enemy turn (Step0)
+            // Enemy acts once per enemy turn (Enemy.cs unchanged)
             e.ResolveAction(player);
+
+            // NEW: after enemy action, facade can trigger "after enemy moves" effects (e.g., Ski bleed ticks)
+            if (combat != null)
+                combat.AfterEnemyAction(e);
 
             // Check after each enemy action
             CheckVictoryDefeat();

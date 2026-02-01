@@ -12,8 +12,33 @@ public enum Mood
     JadeEmperor,
 }
 
+
 public class Player : MonoBehaviour
 {
+
+    public struct DamageContext
+    {
+        public int incomingDamage;
+        public bool cancelDamage;
+        public float shieldEfficiency;
+        public object source;
+    }
+
+    public delegate void BeforeTakeDamageHandler(ref DamageContext ctx);
+    public event BeforeTakeDamageHandler OnBeforeTakeDamage;
+
+    public event System.Action<int> OnAfterTakeDamage;
+
+    public struct ShieldContext
+    {
+        public int amount;     
+        public object source; 
+    }
+    public delegate void BeforeGainShieldHandler(ref ShieldContext ctx);
+    public event BeforeGainShieldHandler OnBeforeGainShield;
+
+
+
     [Header("Stats")]
     [SerializeField] private int maxHealth = 100;
     [SerializeField] private int health;
@@ -102,28 +127,51 @@ public class Player : MonoBehaviour
         return true;
     }
 
-    /// <summary>
-    /// Fixed damage pipeline: shield absorbs damage first.
-    /// </summary>
     public void TakeDamage(int rawDamage)
     {
         if (!IsAlive()) return;
         if (rawDamage <= 0) return;
 
-        int damage = Mathf.RoundToInt(rawDamage * GetDamageResistMultiplier());
+        var ctx = new DamageContext
+        {
+            incomingDamage = rawDamage,
+            cancelDamage = false,
+            shieldEfficiency = 1f,
+            source = null
+        };
 
-        int absorbed = Mathf.Min(shield, damage);
-        shield -= absorbed;
+        OnBeforeTakeDamage?.Invoke(ref ctx);
+
+        if (ctx.cancelDamage)
+        {
+            OnAfterTakeDamage?.Invoke(0);
+            return;
+        }
+
+        int damage = ctx.incomingDamage;
+        if (damage <= 0) { OnAfterTakeDamage?.Invoke(0); return; }
+
+        // ↓↓↓ 下面这段只是在你原本的“扣盾”里加一个效率参数
+        int shieldAbsorbCap = Mathf.FloorToInt(shield * ctx.shieldEfficiency);
+        int absorbed = Mathf.Min(shieldAbsorbCap, damage);
+
+        // 需要把真实消耗的shield换算回去
+        int shieldSpent = (ctx.shieldEfficiency <= 0f) ? 0 : Mathf.CeilToInt(absorbed / ctx.shieldEfficiency);
+        shield = Mathf.Max(0, shield - shieldSpent);
+
         damage -= absorbed;
 
+        int hpLoss = 0;
         if (damage > 0)
         {
+            hpLoss = damage;
             health -= damage;
             if (health < 0) health = 0;
         }
 
-        Debug.Log($"[Player] Took damage. HP={health}, Shield={shield}");
+        OnAfterTakeDamage?.Invoke(hpLoss);
     }
+
 
     public void HealPlayer(int heal)
     {
@@ -139,7 +187,19 @@ public class Player : MonoBehaviour
         if (!IsAlive()) return;
         if (amount <= 0) return;
 
-        shield += amount;
-        Debug.Log($"[Player] Gained shield. HP={health}, Shield={shield}");
+        var ctx = new ShieldContext
+        {
+            amount = amount,
+            source = null
+        };
+
+        OnBeforeGainShield?.Invoke(ref ctx);
+
+        int final = ctx.amount;
+        if (final <= 0) return;
+
+        shield += final;
+        Debug.Log($"[Player] Gained shield +{final}. HP={health}, Shield={shield}");
     }
+
 }
