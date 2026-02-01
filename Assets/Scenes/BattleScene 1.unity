@@ -844,6 +844,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 437678141}
+  - component: {fileID: 437678142}
   m_Layer: 0
   m_Name: DeckSpot
   m_TagString: Untagged
@@ -866,6 +867,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 399213547}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &437678142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 437678140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4df0662c67c370c47b2aa606c52ea29e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &442453622
 GameObject:
   m_ObjectHideFlags: 0
@@ -1631,37 +1644,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2be708ffb8ac81d4fb7a4c9e9b02c520, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1164877244
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1164877245}
-  m_Layer: 0
-  m_Name: Hand
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1164877245
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1164877244}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1701104127}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1196107265 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 361149142604831533, guid: 45801c5b5100fe246b62168a79f7c006, type: 3}
@@ -2453,6 +2435,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 204996839}
     - target: {fileID: 8419456614020520099, guid: 0a5c08b1485240d44aa1596212fe5e17, type: 3}
+      propertyPath: deckManager
+      value: 
+      objectReference: {fileID: 437678142}
+    - target: {fileID: 8419456614020520099, guid: 0a5c08b1485240d44aa1596212fe5e17, type: 3}
       propertyPath: battleManager
       value: 
       objectReference: {fileID: 1954881128}
@@ -3077,7 +3063,6 @@ Transform:
   m_Children:
   - {fileID: 1954881127}
   - {fileID: 1209907147}
-  - {fileID: 1164877245}
   m_Father: {fileID: 1589033960}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1708548231
