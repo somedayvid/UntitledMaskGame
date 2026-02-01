@@ -616,7 +616,7 @@ public class CombatManagerFacade : MonoBehaviour
         }
 
         // ZhongKui lifesteal 10%
-        if (zhong.anyZhongKuiEquipped && dmg > 0)
+        if (IsActiveMask(equippedMasks, activeMaskIndex, "ÖÓØ¸", "zhong_kui") && dmg > 0)
         {
             int heal = Mathf.FloorToInt(dmg * 0.1f);
             if (heal > 0)
@@ -1330,7 +1330,7 @@ public class CombatManagerFacade : MonoBehaviour
 
         public int GetSigned(int v) => inverted ? -v : v;
     }
-
+    
     private struct KitsuneState
     {
         public bool anyKitsuneEquipped;

@@ -11,7 +11,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Combat
   - 
   - 
   - 
@@ -43,4 +43,7 @@ TagManager:
     locked: 0
   - name: SelectedCard
     uniqueID: 2927456397
+    locked: 0
+  - name: Character
+    uniqueID: 110832005
     locked: 0

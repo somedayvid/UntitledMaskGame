@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9edef0148e277954081f8ef4018aa182, type: 3}
   m_Name: 6_mask_GuanYu
   m_EditorClassIdentifier: 
-  maskId: mask_06
+  maskId: guan_yu
   displayName: Guan Yu
   shortDesc: 
   icon: {fileID: 21300000, guid: 665b5e124c35b7c4dbe6be17465efd2b, type: 3}
