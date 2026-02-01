@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
@@ -8,11 +9,12 @@ public class PlayerHandController : MonoBehaviour
 {
     [Header("Refs")]
     [SerializeField] private BattleManager battleManager;
+    [SerializeField] private DeckManager deckManager;
 
     [Header("Hand (Inspector-visible)")]
     [SerializeField] private int handLimit = 10;
     [SerializeField] private List<Card> hand = new List<Card>();
-    [SerializeField] private List<Image> visualHand = new List<Image>();
+    [SerializeField] private List<GameObject> visualHand = new List<GameObject>();
 
     [Header("Selection")]
     [SerializeField] private int selectedIndex = 0;
@@ -27,12 +29,19 @@ public class PlayerHandController : MonoBehaviour
     [SerializeField] private GameObject rightHandBound;
     [SerializeField] private GameObject handPivotPoint;
     [SerializeField] private Transform handTrans;
-    [SerializeField] private Image prefab;
-    [SerializeField] private float bumpDistance = 15.0f;
+    [SerializeField] private GameObject prefab;
+    private float bumpDistance = 2.0f;
+    private float increasedScale = 1.0f;
+    private float normalScale = 0.5f;
+
+    private int startingHandSize = 5;
+
+    public Transform handPosObj;
+    public Transform[] handPosList;
 
     // --------- Public API ---------
     public IReadOnlyList<Card> Hand => hand;
-    public IReadOnlyList<Image> VisualHand => visualHand;
+    public IReadOnlyList<GameObject> VisualHand => visualHand;
     public int HandLimit => handLimit;
     public int SelectedIndex => selectedIndex;
 
@@ -40,38 +49,29 @@ public class PlayerHandController : MonoBehaviour
 
     private void Start()
     {
-        for(int i = 0; i < 3; i++)
+        handPosList = handPosObj.GetComponentsInChildren<Transform>();
+        DrawStartingHand();
+        ReorderHand();
+    }
+
+    public bool AddCardFromPrefab(Card card)
+    {
+        return AddCardToHand(card); 
+    }
+
+    public void DrawStartingHand()
+    {
+        for(int i = 0; i < startingHandSize; i++)
         {
-            AddCardFromPrefab();
+            DrawToHand();
         }
         ReorderHand();
     }
 
-    public bool AddCardFromPrefab()
+    public void DrawToHand()
     {
-        //if (cardPrefab == null)
-        //{
-        //    Debug.LogWarning("[Hand] AddCardFromPrefab got null prefab.");
-        //    return false;
-        //}
-
-        //var info = cardPrefab.GetComponent<CardPrefabInfo>();
-        //if (info == null)
-        //{
-        //    Debug.LogError($"[Hand] Prefab '{cardPrefab.name}' missing CardPrefabInfo component.");
-        //    return false;
-        //}
-
-        //Card created = info.CreateCardInstance();
-
-        Image cardImg = Instantiate(prefab, handTrans);
-        Transform[] tmep = cardImg.GetComponentsInChildren<Transform>();
-        tmep[1].GetComponent<TextMeshProUGUI>().text = "Palm Strike";
-        tmep[2].GetComponent<TextMeshProUGUI>().text = "1";
-        tmep[3].GetComponent<TextMeshProUGUI>().text = "Deal 5 Damage";
-        Card tempCard = new Card();
-
-        return AddCardToHand(tempCard, cardImg); 
+        Card tempCard = deckManager.Draw();
+        AddCardFromPrefab(tempCard);
     }
 
     public bool RemoveFirstCard()
@@ -87,7 +87,7 @@ public class PlayerHandController : MonoBehaviour
         return hand[selectedIndex];
     }
 
-    public bool AddCardToHand(Card card, Image cardImg)
+    public bool AddCardToHand(Card card)
     {
         if (card == null) return false;
 
@@ -96,8 +96,9 @@ public class PlayerHandController : MonoBehaviour
             Debug.LogWarning("[Hand] Hand is full (limit=10). Card rejected.");
             return false;
         }
-
-        visualHand.Add(Instantiate(prefab, transform));
+        GameObject tempObj = Instantiate(prefab, transform);
+        tempObj.GetComponent<SpriteRenderer>().sprite = card.GetImage();
+        visualHand.Add(tempObj);
         hand.Add(card);
 
         selectedIndex = Mathf.Clamp(selectedIndex, 0, hand.Count - 1);
@@ -109,7 +110,9 @@ public class PlayerHandController : MonoBehaviour
         if (index < 0 || index >= hand.Count) return false;
 
         hand.RemoveAt(index);
+        GameObject toDestroy = visualHand[index];
         visualHand.RemoveAt(index);
+        Destroy(toDestroy);
 
         if (hand.Count == 0)
         {
@@ -125,10 +128,15 @@ public class PlayerHandController : MonoBehaviour
 
     private void Selection()
     {
-        Transform cur = handTrans.GetChild(selectedIndex);
-        Transform pre = handTrans.GetChild(previousSelectedIndex);
-        pre.position = new Vector2(pre.position.x, pre.position.y - bumpDistance);
-        cur.position = new Vector2(cur.position.x, cur.position.y + bumpDistance);
+        visualHand[previousSelectedIndex].GetComponent<VisualCard>().SetNewPosition(new Vector2(visualHand[previousSelectedIndex].transform.position.x, visualHand[previousSelectedIndex].transform.position.y - bumpDistance));
+        visualHand[selectedIndex].GetComponent<VisualCard>().SetNewPosition(new Vector2(visualHand[selectedIndex].transform.position.x, visualHand[selectedIndex].transform.position.y + bumpDistance));
+
+        visualHand[previousSelectedIndex].transform.localScale = Vector3.one * normalScale;
+        visualHand[selectedIndex].transform.localScale = Vector3.one * increasedScale;
+
+        visualHand[selectedIndex].GetComponent<SpriteRenderer>().sortingOrder  = 1;
+        visualHand[previousSelectedIndex].GetComponent<SpriteRenderer>().sortingOrder  = 0;
+
         previousSelectedIndex = selectedIndex;
     }
 
@@ -174,6 +182,7 @@ public class PlayerHandController : MonoBehaviour
 
         if (success)
         {
+            deckManager.DiscardCard(card);
             RemoveCardAt(selectedIndex);
             ReorderHand();
         }
@@ -185,29 +194,61 @@ public class PlayerHandController : MonoBehaviour
 
     public void ReorderHand()
     {
-        if (hand.Count > 0)
+        foreach(Transform t in handPosList)
+        {
+            t.position = handPosObj.transform.position;
+        }
+        if (visualHand.Count > 0)
         {
             float handWidth = Mathf.Abs(rightHandBound.transform.position.x) + Mathf.Abs(leftHandBound.transform.position.x);
-            //Vector2 handCenter = new Vector2(0, leftHandBound.transform.position.y);
 
-            float negSwitch = 1.0f;
-
-            for (int i = 0; i < handTrans.childCount; i++)
+            float perCardSpace = handWidth/visualHand.Count;
+            for (int i = 0; i < visualHand.Count; i++)
             {
-                handTrans.GetChild(i).transform.position = Camera.main.WorldToScreenPoint(new Vector2(leftHandBound.transform.position.x + handWidth/hand.Count * i, leftHandBound.transform.position.y));
-                //negSwitch*=-1;
+                handPosList[i].transform.position = new Vector2(leftHandBound.transform.position.x + perCardSpace * i, leftHandBound.transform.position.y);
+                visualHand[i].GetComponent<VisualCard>().SetNewPosition(handPosList[i].transform.position);
             }
             selectedIndex = 0;
             previousSelectedIndex = selectedIndex;
-            Transform temp = handTrans.GetChild(selectedIndex);
-            temp.position = new Vector2(temp.position.x, temp.position.y + bumpDistance);
+            visualHand[selectedIndex].transform.localScale = Vector2.one * increasedScale;
+            visualHand[selectedIndex].GetComponent<VisualCard>().SetNewPosition(new Vector2(leftHandBound.transform.position.x, leftHandBound.transform.position.y + bumpDistance));
         }
+    }
+
+    public void VisuallyMoveToDiscard()
+    {
+        for(int i = visualHand.Count - 1; i > 0; i--)
+        {
+            visualHand[i].GetComponent<VisualCard>().SetNewPosition(new Vector2(30, -10));
+        }
+
+        StartCoroutine(RemoveAll());
+    }
+
+    private IEnumerator RemoveAll()
+    {
+        yield return new WaitForSeconds(1);
+        for (int i = visualHand.Count - 1; i > 0; i--)
+        {
+            RemoveCardAt(i);
+        }
+        DrawStartingHand();
+    }
+
+    public void EndOfTurn()
+    {
+        selectedIndex = -1;
+        previousSelectedIndex = -1;
+        deckManager.MoveHandToDiscard(hand);
+        VisuallyMoveToDiscard();
+        selectedIndex = 1;
+        previousSelectedIndex = 1;
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.RightArrow)) SelectNext();
         if (Input.GetKeyDown(KeyCode.LeftArrow)) SelectPrev();
-        if (Input.GetKeyDown(KeyCode.Return)) PlaySelected();
+        if (Input.GetKeyDown(KeyCode.UpArrow)) PlaySelected();
     }
 }

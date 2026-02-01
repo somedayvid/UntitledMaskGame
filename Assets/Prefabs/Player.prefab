@@ -102,6 +102,7 @@ MonoBehaviour:
   maxHealth: 100
   health: 0
   shield: 0
+  strength: 0
   mood: 0
 --- !u!114 &4562461069581832253
 MonoBehaviour:
@@ -118,6 +119,7 @@ MonoBehaviour:
   maxHealth: 100
   health: 0
   shield: 0
+  strength: 0
   mood: 0
 --- !u!114 &8419456614020520099
 MonoBehaviour:
@@ -133,6 +135,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   battleManager: {fileID: 0}
   handLimit: 10
+  visualHand: []
   selectedIndex: 0
+  previousSelectedIndex: 0
   useDefaultTarget: 1
   explicitTargetEnemy: {fileID: 0}
+  leftHandBound: {fileID: 0}
+  rightHandBound: {fileID: 0}
+  handPivotPoint: {fileID: 0}
+  handTrans: {fileID: 0}
+  prefab: {fileID: 0}
+  bumpDistance: 15

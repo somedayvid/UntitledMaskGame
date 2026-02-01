@@ -14,7 +14,7 @@ public class Deck : MonoBehaviour
     [SerializeField] private Dictionary<int, Card> deck;
 
     public static Deck instance;
-
+        
     private void Awake()
     {
         if (instance != this && instance != null)

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -33,13 +34,23 @@ public class BattleManager : MonoBehaviour
 
     [SerializeField] private int activeMaskIndex = 0;
 
+    public CardGen cardGen;
+
     public BattleState State { get; private set; } = BattleState.Setup;
     public int TurnNumber { get; private set; } = 1;
 
     private readonly List<Enemy> enemies = new();
 
+    private static BattleManager instance;
+
+    public static BattleManager GetInstance()
+    {
+        return instance;
+    }
+
     private void Awake()
     {
+        instance = this;
         // Cache Enemy interface references
         enemies.Clear();
         foreach (var mb in enemyBehaviours)
@@ -72,12 +83,14 @@ public class BattleManager : MonoBehaviour
 
         State = BattleState.PlayerTurn;
         Debug.Log($"--- Player Turn {TurnNumber} --- ActiveMask={GetActiveMaskName()}");
+        ActionLog.GetInstance().AddText($"Turn {TurnNumber}");
 
         CheckVictoryDefeat();
     }
 
     /// <summary>
     /// UI calls this when the player wants to play a card.
+    /// to add: if no target selected, target the first enemy
     /// </summary>
     public bool TryPlayCard(Card card, Enemy target)
     {
@@ -85,6 +98,11 @@ public class BattleManager : MonoBehaviour
         if (player == null) return false;
         if (card == null) return false;
 
+
+        if (target == null)
+        {
+            target = GetFirstAliveEnemy();
+        }
         // Player.PlayCard currently rejects if enemy is null or dead.
         bool success = player.PlayCard(card, target);
 
@@ -126,7 +144,7 @@ public class BattleManager : MonoBehaviour
     public void EndPlayerTurn()
     {
         if (State != BattleState.PlayerTurn) return;
-
+        player.GetComponent<PlayerHandController>().EndOfTurn();
         Debug.Log("--- End Player Turn -> Enemy Turn ---");
         State = BattleState.EnemyTurn;
 
@@ -144,14 +162,14 @@ public class BattleManager : MonoBehaviour
             if (e == null) continue;
             if (!e.IsAlive()) continue;
 
+            e.PlayAnime();
+
             // Enemy acts once per enemy turn (Step0)
             e.ResolveAction(player);
 
             // Check after each enemy action
             CheckVictoryDefeat();
         }
-
-        // Back to player
         TurnNumber++;
         EnterPlayerTurn();
     }
@@ -187,8 +205,9 @@ public class BattleManager : MonoBehaviour
 
         if (!anyEnemyAlive)
         {
+            cardGen.KardGen(3);
             State = BattleState.Victory;
-            Debug.Log("=== VICTORY ===");
+            ActionLog.GetInstance().AddText("=== VICTORY ===");
         }
     }
 
@@ -196,6 +215,7 @@ public class BattleManager : MonoBehaviour
     {
         foreach (var e in enemies)
         {
+            Debug.Log("[BattleManager] First enemy found!");
             if (e != null && e.IsAlive()) return e;
         }
         return null;

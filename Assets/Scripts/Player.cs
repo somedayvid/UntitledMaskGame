@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public enum Mood
@@ -19,11 +20,27 @@ public class Player : MonoBehaviour
     [SerializeField] private int health;
     [SerializeField] private int shield;
     [SerializeField] private int strength;
+    //Khaslana'd
+    public int Health => health;
+    public int MaxHealth => maxHealth;
+
+    public int Shield => shield;
+    public int MaxShield => Mathf.Max(1, maxHealth);
+
     [Header("State")]
     [SerializeField] private Mood mood = Mood.Neutral;
 
     [Header("Hand")]
     public List<Card> hand = new List<Card>();
+
+    public TextMeshProUGUI shieldNum;
+
+    private static Player instance;
+
+    public static Player GetInstance()
+    {
+        return instance;
+    }
 
     /// <summary>
     /// Fired when a card is successfully played.
@@ -32,6 +49,7 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        instance = this;
         health = maxHealth;
         shield = 0;
         strength = 0;
@@ -125,7 +143,8 @@ public class Player : MonoBehaviour
             if (health < 0) health = 0;
         }
 
-        Debug.Log($"[Player] Took damage. HP={health}, Shield={shield}");
+        ActionLog.GetInstance().AddText($"[Player] Took damage. HP={health}, Shield={shield}");
+        shieldNum.text = shield.ToString();
     }
 
     public void HealPlayer(int heal)
@@ -143,6 +162,8 @@ public class Player : MonoBehaviour
         if (amount <= 0) return;
 
         shield += amount;
+        ActionLog.GetInstance().AddText($"{amount} shield gained!");
+        shieldNum.text = shield.ToString();
         Debug.Log($"[Player] Gained shield. HP={health}, Shield={shield}");
     }
 }

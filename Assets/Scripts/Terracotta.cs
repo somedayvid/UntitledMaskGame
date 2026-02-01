@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Terracotta : MonoBehaviour, Enemy
+public class Terracotta : MonoBehaviour, Enemy  
 
 {
     int maxHealth = 30;
@@ -50,5 +50,10 @@ public class Terracotta : MonoBehaviour, Enemy
     bool Enemy.IsAlive()
     {
         return IsAlive();
+    }
+
+    void Enemy.PlayAnime()
+    {
+        gameObject.GetComponent<EnemyParentClass>().PlayAnimation();
     }
 }
