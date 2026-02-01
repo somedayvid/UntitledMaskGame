@@ -77,6 +77,11 @@ public class GameManager : MonoBehaviour
            
     }
 
+    public void StartTutorial()
+    {
+        SceneManager.LoadScene("Tutorial");
+    }
+
 
     public void StartGame()
     {

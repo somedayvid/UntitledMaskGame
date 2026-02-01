@@ -602,11 +602,16 @@ public class CombatManagerFacade : MonoBehaviour
         // Ski: all attacks cause bleed
         if (ski.anySkiEquipped)
         {
+            
             if (status.TryGetValue(enemy, out var st))
             {
-                st.bleed += 1;
-                status[enemy] = st;
-                DLog($"{MASK_LOG}[Ski] Apply bleed +1 => bleed={st.bleed}");
+                if(UnityEngine.Random.value <0.5f)
+                {
+                    st.bleed += 1;
+                    status[enemy] = st;
+                    DLog($"{MASK_LOG}[Ski] Apply bleed +1 => bleed={st.bleed}");
+
+                }
             }
         }
 
@@ -1053,7 +1058,8 @@ public class CombatManagerFacade : MonoBehaviour
         guan.anyGuanYuEquipped =HasMask(equippedMasks, "¹ØÓð") || HasMaskId(equippedMasks, "guan_yu");
 
 
-        DLog($"{MASK_LOG} Equipped flags => ErLang={erlang.anyErLangEquipped} ZhongKui={zhong.anyZhongKuiEquipped} SunWukong={wukong.anyWukongEquipped} Kitsune={kitsune.anyKitsuneEquipped} Ski={ski.anySkiEquipped}");
+        DLog($"{MASK_LOG} Equipped flags => ErLang={erlang.anyErLangEquipped} ZhongKui={zhong.anyZhongKuiEquipped} SunWukong={wukong.anyWukongEquipped} Kitsune={kitsune.anyKitsuneEquipped} Ski={ski.anySkiEquipped} GuanYu={guan.anyGuanYuEquipped}");
+
     }
 
     private static MaskData GetActiveMask(MaskData[] equippedMasks, int activeMaskIndex)
