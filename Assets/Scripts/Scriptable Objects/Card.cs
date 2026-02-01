@@ -41,7 +41,6 @@ public class Card
     //change this accordingly
 
     public int ID;
-    public Mood moodType;
     public string cardName;
     public CardType cardType;
     public CardEffect cardEffect;
@@ -120,6 +119,88 @@ public class Card
             case (CardEffect.Pills):
                 break;
         }
+    }
+        public string GetName()
+        {
+            switch (cardEffect)
+            {
+                case CardEffect.Null:
+                    return "�";
+
+                case CardEffect.DrunkenFist:
+                    return "Drunken Fist";
+
+                case CardEffect.PalmStrike:
+                    return "Palm Strike";
+
+                case CardEffect.SmallShieldPotion:
+                    return "Minor Shield Potion";
+
+                case CardEffect.ShieldPotion:
+                    return "Shield Potion";
+
+                case CardEffect.OrientalMedicineJug:
+                    return "Jug of Oriental Medicine";
+
+                case CardEffect.SubmachineGun:
+                    return "Submachine Gun";
+
+                case CardEffect.OrientalDaggerRitual:
+                    return "Dagger Ritual";
+
+                case CardEffect.OrientalDagger:
+                    return "Oriental Dagger";
+
+                case CardEffect.Meditate:
+                    return "Meditate";
+
+                case CardEffect.OrientalTigerBalm:
+                    return "Tiger Balm";
+
+                case CardEffect.GinsengRoot:
+                    return "Ginseng Root";
+
+                case CardEffect.HeavenlyInsight:
+                    return "Heavenly Insight";
+
+                case CardEffect.MandateOfHeaven:
+                    return "Mandate of Heaven";
+
+                case CardEffect.SunTzusInsight:
+                    return "Sun Tzu�s Insight";
+
+                case CardEffect.DragonStrike:
+                    return "Dragon Strike";
+
+                case CardEffect.HeavenSplit:
+                    return "Heaven-Splitting Blow";
+
+                case CardEffect.JadeBarrier:
+                    return "Jade Barrier";
+
+                case CardEffect.Momentum:
+                    return "Momentum";
+
+                case CardEffect.RockThrow:
+                    return "Rock Throw";
+
+                case CardEffect.Pills:
+                    return "Mystic Pills";
+                default:
+                    return "-";
+            }
+        }
+
+    public int GetCost()
+    {
+        return 1;
+    }
+
+    public string GetEffect()
+    {
+        return "Does a thing";
+    }
+
 
     }
     public virtual void UseCard()

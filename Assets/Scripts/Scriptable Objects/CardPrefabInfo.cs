@@ -10,7 +10,6 @@ public class CardPrefabInfo : MonoBehaviour
         return new Card
         {
             ID = template.ID,
-            moodType = template.moodType,
             cardName = template.cardName,
             cardType = template.cardType,
             cardEffect = template.cardEffect,

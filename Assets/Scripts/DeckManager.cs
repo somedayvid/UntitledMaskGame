@@ -4,44 +4,73 @@ using UnityEngine;
 
 public class DeckManager : MonoBehaviour
 {
-    [SerializeField] List<Card> deck;
-    List<Card> discard;
+    [SerializeField] private List<Card> mainDeck = new List<Card>();
+    [SerializeField] private List<Card> tempDeck = new List<Card>();
+    private List<Card> discardDeck = new List<Card>();
+
+    List<Card> discard = new List<Card>();
     void shuffle()
     {
-        for (int i = deck.Count - 1; i > 0; i--)
+        for (int i = tempDeck.Count - 1; i > 0; i--)
         {
             int j = Random.Range(0, i + 1);
-            Card temp = deck[i];
-            deck[i] = deck[j];
-            deck[j] = temp;
+            Card temp = tempDeck[i];
+            tempDeck[i] = tempDeck[j];
+            tempDeck[j] = temp;
         }
     }
     public Card Draw()
     {
-        if (deck.Count == 0)
+        if (tempDeck.Count == 0)
         {
-            deck = discard;
+            tempDeck = new List<Card>(discard);
             discard.Clear();
             shuffle();
         }
-        Card card = deck[0];
-        deck.RemoveAt(0);
-        discard.Add(card);
+        if (tempDeck.Count == 0) return null;
+        Card card = tempDeck[0];
+        tempDeck.RemoveAt(0);
         return card;
     }
     public void AddCard(Card card)
     {
-        deck.Add(card);
+        tempDeck.Add(card);
         shuffle();
     }
-    void Start()
+
+    public void RemoveCard(Card card)
     {
-        shuffle();  
+        tempDeck.Remove(card);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void StartBattle()
     {
-        
+        tempDeck = new List<Card>(mainDeck);
+    }
+
+    public void EndBattle()
+    {
+        tempDeck = null;
+        discardDeck.Clear();
+    }
+
+    void Start()
+    {
+        Card newCard = new Card();
+        newCard.cardEffect = CardEffect.DrunkenFist;
+        AddCard(newCard);
+        Card newCard1 = new Card();
+        newCard1.cardEffect = CardEffect.Momentum;
+        AddCard(newCard1);
+        Card newCard2 = new Card();
+        newCard2.cardEffect = CardEffect.RockThrow;
+        AddCard(newCard2);
+        AddCard(newCard2);
+        AddCard(newCard2);
+        AddCard(newCard2);
+        AddCard(newCard2);
+        AddCard(newCard2);
+
+        shuffle();
     }
 }
