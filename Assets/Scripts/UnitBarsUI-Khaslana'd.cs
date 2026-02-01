@@ -23,8 +23,22 @@ public class UnitBarsUI : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (player != null)
+        if (dummy != null)
         {
+            SetFill(healthFill, dummy.Health, dummy.MaxHealth);
+
+            if (shieldFill != null)
+                shieldFill.gameObject.SetActive(false);
+
+            if (hpText != null)
+                hpText.text = $"{dummy.Health}/{dummy.MaxHealth}";
+
+            if (shieldText != null)
+                shieldText.gameObject.SetActive(false);
+
+            return;
+        }
+
             SetFill(healthFill, player.Health, player.MaxHealth);
             SetFill(shieldFill, player.Shield, player.MaxShield);
 
@@ -44,24 +58,6 @@ public class UnitBarsUI : MonoBehaviour
                 }
             }
 
-            return;
-        }
-
-        if (dummy != null)
-        {
-            SetFill(healthFill, dummy.Health, dummy.MaxHealth);
-
-            if (shieldFill != null)
-                shieldFill.gameObject.SetActive(false);
-
-            if (hpText != null)
-                hpText.text = $"{dummy.Health}/{dummy.MaxHealth}";
-
-            if (shieldText != null)
-                shieldText.gameObject.SetActive(false);
-
-            return;
-        }
 
     }
 
