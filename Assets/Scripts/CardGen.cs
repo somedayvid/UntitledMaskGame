@@ -1,17 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class CardGen : MonoBehaviour
 {
     public List<Card> generatedCards = new List<Card>();
     public DeckManager deckManager;
     public GameObject cardGenPanel;
-    public GameObject num1;
-    public GameObject num2; 
-    public GameObject num3;
+    [SerializeField] private List<Image> imgList;
 
-    public void KardGen(int count)
+    public void KardGen(int count) 
     {
         cardGenPanel.SetActive(true);
         generatedCards.Clear();
@@ -29,9 +27,9 @@ public class CardGen : MonoBehaviour
             generatedCards.Add(card);
             Debug.Log($"Generated card {i + 1}: {card.cardName}");
         }
-        num1.GetComponent<Image>().sprite = generatedCards[0].GetImage();
-        num2.GetComponent<Image>().sprite = generatedCards[1].GetImage();
-        num3.GetComponent<Image>().sprite = generatedCards[2].GetImage();
+        imgList[0].sprite = generatedCards[0].GetImage();
+        imgList[1].sprite = generatedCards[1].GetImage();
+        imgList[2].sprite = generatedCards[2].GetImage();
     }
 
     public void SelectThisCard(int index)

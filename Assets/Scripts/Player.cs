@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public enum Mood
@@ -31,6 +32,8 @@ public class Player : MonoBehaviour
 
     [Header("Hand")]
     public List<Card> hand = new List<Card>();
+
+    public TextMeshProUGUI shieldNum;
 
     private static Player instance;
 
@@ -141,6 +144,7 @@ public class Player : MonoBehaviour
         }
 
         ActionLog.GetInstance().AddText($"[Player] Took damage. HP={health}, Shield={shield}");
+        shieldNum.text = shield.ToString();
     }
 
     public void HealPlayer(int heal)
@@ -158,6 +162,8 @@ public class Player : MonoBehaviour
         if (amount <= 0) return;
 
         shield += amount;
+        ActionLog.GetInstance().AddText($"{amount} shield gained!");
+        shieldNum.text = shield.ToString();
         Debug.Log($"[Player] Gained shield. HP={health}, Shield={shield}");
     }
 }

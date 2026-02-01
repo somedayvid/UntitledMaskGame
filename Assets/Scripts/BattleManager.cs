@@ -41,8 +41,16 @@ public class BattleManager : MonoBehaviour
 
     private readonly List<Enemy> enemies = new();
 
+    private static BattleManager instance;
+
+    public static BattleManager GetInstance()
+    {
+        return instance;
+    }
+
     private void Awake()
     {
+        instance = this;
         // Cache Enemy interface references
         enemies.Clear();
         foreach (var mb in enemyBehaviours)

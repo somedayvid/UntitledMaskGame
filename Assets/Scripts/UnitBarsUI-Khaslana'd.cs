@@ -13,7 +13,6 @@ public class UnitBarsUI : MonoBehaviour
 
     public TextMeshProUGUI hpText;
 
-
     private void Start()
     {
         hpText.text = player.Health.ToString() + '/' + player.MaxHealth.ToString();

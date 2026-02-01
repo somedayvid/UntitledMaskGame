@@ -242,7 +242,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1312629780}
+      - m_Target: {fileID: 1312629782}
         m_TargetAssemblyTypeName: CardGen, Assembly-CSharp
         m_MethodName: SelectThisCard
         m_Mode: 3
@@ -1716,9 +1716,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   deckManager: {fileID: 0}
   cardGenPanel: {fileID: 0}
-  num1: {fileID: 0}
-  num2: {fileID: 0}
-  num3: {fileID: 0}
+  imgList: []
 --- !u!1 &585584642
 GameObject:
   m_ObjectHideFlags: 0
@@ -2844,7 +2842,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1312629780}
+      - m_Target: {fileID: 1312629782}
         m_TargetAssemblyTypeName: CardGen, Assembly-CSharp
         m_MethodName: SelectThisCard
         m_Mode: 3
@@ -4402,7 +4400,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1312629781}
-  - component: {fileID: 1312629780}
+  - component: {fileID: 1312629782}
   m_Layer: 0
   m_Name: CardGen
   m_TagString: Untagged
@@ -4410,23 +4408,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1312629780
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1312629779}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5601466302a8d1e4383c7e840d2e6771, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  deckManager: {fileID: 437678142}
-  cardGenPanel: {fileID: 1144293469}
-  num1: {fileID: 1130663559}
-  num2: {fileID: 1283418034}
-  num3: {fileID: 1797450495}
 --- !u!4 &1312629781
 Transform:
   m_ObjectHideFlags: 0
@@ -4442,6 +4423,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1701104127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1312629782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1312629779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5601466302a8d1e4383c7e840d2e6771, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deckManager: {fileID: 437678142}
+  cardGenPanel: {fileID: 1144293469}
+  imgList:
+  - {fileID: 1955673426}
+  - {fileID: 821433923}
+  - {fileID: 2136883345}
 --- !u!1 &1344855630
 GameObject:
   m_ObjectHideFlags: 0
@@ -4911,6 +4910,10 @@ PrefabInstance:
       propertyPath: rightHandBound
       value: 
       objectReference: {fileID: 1081656074}
+    - target: {fileID: 9062498727659034326, guid: 0a5c08b1485240d44aa1596212fe5e17, type: 3}
+      propertyPath: shieldNum
+      value: 
+      objectReference: {fileID: 623313430}
     m_RemovedComponents:
     - {fileID: 4562461069581832253, guid: 0a5c08b1485240d44aa1596212fe5e17, type: 3}
     m_RemovedGameObjects: []
@@ -7115,7 +7118,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   activeMaskIndex: 0
-  cardGen: {fileID: 1312629780}
+  cardGen: {fileID: 1312629782}
 --- !u!1 &1955673424
 GameObject:
   m_ObjectHideFlags: 0
@@ -7274,7 +7277,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1312629780}
+      - m_Target: {fileID: 1312629782}
         m_TargetAssemblyTypeName: CardGen, Assembly-CSharp
         m_MethodName: SelectThisCard
         m_Mode: 3
