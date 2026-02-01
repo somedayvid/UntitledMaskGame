@@ -8,6 +8,7 @@ public class PlayerHandController : MonoBehaviour
 {
     [Header("Refs")]
     [SerializeField] private BattleManager battleManager;
+    [SerializeField] private DeckManager deckManager;
 
     [Header("Hand (Inspector-visible)")]
     [SerializeField] private int handLimit = 10;
@@ -28,7 +29,11 @@ public class PlayerHandController : MonoBehaviour
     [SerializeField] private GameObject handPivotPoint;
     [SerializeField] private Transform handTrans;
     [SerializeField] private Image prefab;
-    [SerializeField] private float bumpDistance = 15.0f;
+    [SerializeField] private float bumpDistance = 100.0f;
+    [SerializeField] private float increasedScale = 5.0f;
+    [SerializeField] private float normalScale = 2.5f;
+
+    [SerializeField] private int startingHandSize = 5;
 
     // --------- Public API ---------
     public IReadOnlyList<Card> Hand => hand;
@@ -40,14 +45,11 @@ public class PlayerHandController : MonoBehaviour
 
     private void Start()
     {
-        for(int i = 0; i < 3; i++)
-        {
-            AddCardFromPrefab();
-        }
+        DrawStartingHand();
         ReorderHand();
     }
 
-    public bool AddCardFromPrefab()
+    public bool AddCardFromPrefab(Card card)
     {
         //if (cardPrefab == null)
         //{
@@ -66,12 +68,27 @@ public class PlayerHandController : MonoBehaviour
 
         Image cardImg = Instantiate(prefab, handTrans);
         Transform[] tmep = cardImg.GetComponentsInChildren<Transform>();
-        tmep[1].GetComponent<TextMeshProUGUI>().text = "Palm Strike";
-        tmep[2].GetComponent<TextMeshProUGUI>().text = "1";
-        tmep[3].GetComponent<TextMeshProUGUI>().text = "Deal 5 Damage";
+        tmep[1].GetComponent<TextMeshProUGUI>().text = card.GetName();
+        tmep[2].GetComponent<TextMeshProUGUI>().text = card.GetCost().ToString();
+        tmep[3].GetComponent<TextMeshProUGUI>().text = card.GetEffect();
         Card tempCard = new Card();
 
         return AddCardToHand(tempCard, cardImg); 
+    }
+
+    public void DrawStartingHand()
+    {
+        for(int i = 0; i < startingHandSize; i++)
+        {
+            DrawToHand();
+        }
+    }
+
+    public void DrawToHand()
+    {
+        Card tempCard = deckManager.Draw();
+        deckManager.RemoveCard(tempCard);
+        AddCardFromPrefab(tempCard);
     }
 
     public bool RemoveFirstCard()
@@ -129,6 +146,8 @@ public class PlayerHandController : MonoBehaviour
         Transform pre = handTrans.GetChild(previousSelectedIndex);
         pre.position = new Vector2(pre.position.x, pre.position.y - bumpDistance);
         cur.position = new Vector2(cur.position.x, cur.position.y + bumpDistance);
+        pre.GetComponent<RectTransform>().localScale = Vector3.one * normalScale;
+        cur.GetComponent<RectTransform>().localScale = Vector3.one * increasedScale;
         previousSelectedIndex = selectedIndex;
     }
 
@@ -176,6 +195,7 @@ public class PlayerHandController : MonoBehaviour
         if (success)
         {
             RemoveCardAt(selectedIndex);
+            Destroy(handTrans.GetChild(selectedIndex).gameObject);
             ReorderHand();
         }
         else
@@ -202,6 +222,7 @@ public class PlayerHandController : MonoBehaviour
             previousSelectedIndex = selectedIndex;
             Transform temp = handTrans.GetChild(selectedIndex);
             temp.position = new Vector2(temp.position.x, temp.position.y + bumpDistance);
+            temp.GetComponent<RectTransform>().localScale = Vector3.one * increasedScale;
         }
     }
 
