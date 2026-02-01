@@ -119,7 +119,7 @@ public class Card
             switch (cardEffect)
             {
                 case CardEffect.Null:
-                    return "—";
+                    return "?";
 
                 case CardEffect.DrunkenFist:
                     return "Drunken Fist";
