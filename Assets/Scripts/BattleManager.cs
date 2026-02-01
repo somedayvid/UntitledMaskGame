@@ -73,6 +73,7 @@ public class BattleManager : MonoBehaviour
 
         State = BattleState.PlayerTurn;
         Debug.Log($"--- Player Turn {TurnNumber} --- ActiveMask={GetActiveMaskName()}");
+        ActionLog.GetInstance().AddText($"Turn {TurnNumber}");
 
         CheckVictoryDefeat();
     }
