@@ -132,7 +132,7 @@ public class BattleManager : MonoBehaviour
     public void EndPlayerTurn()
     {
         if (State != BattleState.PlayerTurn) return;
-
+        player.GetComponent<PlayerHandController>().EndOfTurn();
         Debug.Log("--- End Player Turn -> Enemy Turn ---");
         State = BattleState.EnemyTurn;
 

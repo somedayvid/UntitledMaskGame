@@ -64,6 +64,7 @@ public class PlayerHandController : MonoBehaviour
         {
             DrawToHand();
         }
+        ReorderHand();
     }
 
     public void DrawToHand()
@@ -95,7 +96,7 @@ public class PlayerHandController : MonoBehaviour
             return false;
         }
 
-        visualHand.Add(Instantiate(prefab, transform));
+        visualHand.Add(Instantiate(prefab, handTrans));
         hand.Add(card);
 
         selectedIndex = Mathf.Clamp(selectedIndex, 0, hand.Count - 1);
@@ -107,7 +108,7 @@ public class PlayerHandController : MonoBehaviour
         if (index < 0 || index >= hand.Count) return false;
 
         hand.RemoveAt(index);
-        GameObject toDestroy = visualHand[selectedIndex];
+        GameObject toDestroy = visualHand[index];
         visualHand.RemoveAt(index);
         Destroy(toDestroy);
 
@@ -212,10 +213,25 @@ public class PlayerHandController : MonoBehaviour
         }
     }
 
+    public void VisuallyMoveToDiscard()
+    {
+        for(int i = visualHand.Count - 1; i > -1; i--)
+        {
+            RemoveCardAt(i);
+        }
+    }
+
+    public void EndOfTurn()
+    {
+        deckManager.MoveHandToDiscard(hand);
+        VisuallyMoveToDiscard();
+        DrawStartingHand();
+    }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.RightArrow)) SelectNext();
         if (Input.GetKeyDown(KeyCode.LeftArrow)) SelectPrev();
-        if (Input.GetKeyDown(KeyCode.Return)) PlaySelected();
+        if (Input.GetKeyDown(KeyCode.UpArrow)) PlaySelected();
     }
 }

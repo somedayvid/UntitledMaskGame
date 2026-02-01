@@ -9,8 +9,6 @@ public class DeckManager : MonoBehaviour
     [SerializeField] private List<Card> tempDeck = new List<Card>();
     private List<Card> discardDeck = new List<Card>();
 
-    List<Card> discard = new List<Card>();
-
     public TextMeshProUGUI discardPileCount;
     public TextMeshProUGUI combatDeckCount;
 
@@ -28,8 +26,8 @@ public class DeckManager : MonoBehaviour
     {
         if (tempDeck.Count == 0)
         {
-            tempDeck = new List<Card>(discard);
-            discard.Clear();
+            tempDeck = new List<Card>(discardDeck);
+            discardDeck.Clear();
             discardPileCount.text = discardDeck.Count.ToString();
             combatDeckCount.text = tempDeck.Count.ToString();
             shuffle();
@@ -70,6 +68,12 @@ public class DeckManager : MonoBehaviour
         discardPileCount.text = discardDeck.Count.ToString();
     }
 
+    public void MoveHandToDiscard(List<Card> playerHand)
+    {
+        discardDeck.AddRange(playerHand);
+        discardPileCount.text = discardDeck.Count.ToString();
+    }
+
     void Awake()
     {
         Card newCard = new Card();
@@ -80,6 +84,7 @@ public class DeckManager : MonoBehaviour
         AddCard(newCard);
         Card newCard2 = new Card();
         newCard2.cardEffect = CardEffect.RockThrow;
+        AddCard(newCard2);
         AddCard(newCard2);
         AddCard(newCard2);
         AddCard(newCard2);
