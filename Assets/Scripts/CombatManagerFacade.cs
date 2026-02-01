@@ -916,40 +916,34 @@ public class CombatManagerFacade : MonoBehaviour
             shield = 0
         };
 
-        public static CardBlueprint ZhongDeepConfusion() => new CardBlueprint
-        {
-            id = ID_ZHONG_DEEP_CONFUSION,
-            name = "Deep Confusion",
-            type = CardType.Power, // Negative cards are treated as Power/no-op cards
-            effect = CardEffect.Null,
-            cost = 1,
-            damage = 0,
-            shield = 0
-        };
+public static CardBlueprint ZhongDeepConfusion() => new CardBlueprint
+{
+    id = ID_ZHONG_DEEP_CONFUSION,
+    name = "Deep Confusion",
+    type = CardType.Power, // Negative cards are treated as Power/no-op cards
+    effect = CardEffect.Null,
+    cost = 1, damage = 0, shield = 0
+};
 
-        public static CardBlueprint ZhongSad() => new CardBlueprint
-        {
-            id = ID_ZHONG_SAD,
-            name = "Sad",
-            type = CardType.Power, // Negative cards are treated as Power/no-op cards
-            effect = CardEffect.Null,
-            cost = 0,
-            damage = 0,
-            shield = 0,
-            flags = CardFlags.Unremovable
-        };
+public static CardBlueprint ZhongSad() => new CardBlueprint
+{
+    id = ID_ZHONG_SAD,
+    name = "Sad",
+    type = CardType.Power, // Negative cards are treated as Power/no-op cards
+    effect = CardEffect.Null,
+    cost = 0, damage = 0, shield = 0,
+    flags = CardFlags.Unremovable
+};
 
-        public static CardBlueprint ZhongHomesick() => new CardBlueprint
-        {
-            id = ID_ZHONG_HOMESICK,
-            name = "Homesick",
-            type = CardType.Power, // Negative cards are treated as Power/no-op cards
-            effect = CardEffect.Null,
-            cost = 0,
-            damage = 0,
-            shield = 0,
-            onDiscardSelfDamage = 3
-        };
+public static CardBlueprint ZhongHomesick() => new CardBlueprint
+{
+    id = ID_ZHONG_HOMESICK,
+    name = "Homesick",
+    type = CardType.Power, // Negative cards are treated as Power/no-op cards
+    effect = CardEffect.Null,
+    cost = 0, damage = 0, shield = 0,
+    onDiscardSelfDamage = 3
+};
 
 
         public static CardBlueprint KitsuneCard() => new CardBlueprint
