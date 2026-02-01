@@ -45,6 +45,11 @@ public class Player : MonoBehaviour
     [SerializeField] private int health;
     [SerializeField] private int shield;
     [SerializeField] private int strength;
+    private int iFrames = 0;
+    public void addIFrames()
+    {
+        iFrames++;
+    }
     //Khaslana'd
     public int Health => health;
     public int MaxHealth => maxHealth;
@@ -83,6 +88,10 @@ public class Player : MonoBehaviour
     public bool IsAlive()
     {
         return health > 0;
+    }
+    public void addStrength(int amt)
+    {
+        strength += amt;
     }
 
     private float GetDamageMultiplier()
@@ -149,7 +158,11 @@ public class Player : MonoBehaviour
     {
         if (!IsAlive()) return;
         if (rawDamage <= 0) return;
-
+        if (iFrames > 0)
+        {
+            iFrames--;
+            return;
+        }
         var ctx = new DamageContext
         {
             incomingDamage = rawDamage,
