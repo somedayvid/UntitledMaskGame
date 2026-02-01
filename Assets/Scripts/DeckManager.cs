@@ -97,13 +97,13 @@ public class DeckManager : MonoBehaviour
         AddCardMain(newCard);
         Card newCard2 = new Card();
         newCard2.cardEffect = CardEffect.RockThrow;
-        AddCardMain(newCard2);
-        AddCardMain(newCard2);
-        Card newCard3 = new Card();
-        newCard3.cardEffect = CardEffect.SmallShieldPotion;
-        AddCardMain(newCard3);
-        AddCardMain(newCard3);
-        AddCardMain(newCard3);
-        StartBattle();
+        AddCard(newCard2);
+        AddCard(newCard2);
+        AddCard(newCard2);
+        AddCard(newCard2);
+        AddCard(newCard2);
+        AddCard(newCard2);
+
+        shuffle();
     }
 }

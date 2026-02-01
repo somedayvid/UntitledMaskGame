@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum CardType
@@ -5,7 +7,8 @@ public enum CardType
     Attack,
     Defense,
     Power,
-    Heal
+    Heal,
+    NegativeType
 }
 public enum CardEffect
 {
@@ -14,7 +17,8 @@ public enum CardEffect
     PalmStrike,
     SmallShieldPotion,
     ShieldPotion,
-    OrientalMedicineJug, 
+    OrientalMedicineJug,
+    SubmachineGun,
     OrientalDaggerRitual,
     OrientalDagger,
     Meditate,
@@ -30,13 +34,15 @@ public enum CardEffect
     RockThrow,
     Pills,
     BuddahStrike,
-    SubmachineGun,
+    //SubmachineGun,
     
 }
 //[CreateAssetMenu(fileName = "Card", menuName = "ScriptableObjects/Card", order = 1)]
 
 public class Card
 {
+    //change this accordingly
+
     public int ID;
     public string cardName;
     public CardType cardType;
@@ -58,9 +64,10 @@ public class Card
     {
         switch (cardEffect)
         {
-            case CardEffect.DrunkenFist:
+            case (CardEffect.DrunkenFist):
                 int rng = Random.Range(0, 2);
-                damage = (rng == 0) ? 0 : 12;
+                if (rng == 0) damage = 0;
+                else damage = 12;
                 break;
             case (CardEffect.PalmStrike):
                 damage = 5;
@@ -81,6 +88,9 @@ public class Card
                 cardType = CardType.Defense;
                 break;
             case (CardEffect.OrientalDaggerRitual):
+                cardType = CardType.Power;
+
+
                 Card temp = new Card();
                 temp.cardEffect = CardEffect.OrientalDagger;
                 DeckManager.GetInstance().AddCard(temp);
@@ -92,28 +102,57 @@ public class Card
                 damage = 3;
                 break;
             case (CardEffect.Meditate):
+                chi = 0;
+                CombatManagerFacade.GetInstance().addMana(1);
+                cardType = CardType.Power;
                 break;
             case (CardEffect.OrientalTigerBalm):
+                if (CombatManagerFacade.GetInstance().Mana < 2) break;
+                cardType = CardType.Power;
+                chi = 2;
+                Player.GetInstance().addStrength(2);
                 break;
             case (CardEffect.GinsengRoot):
+                chi = 1;
+                cardType = CardType.Power;
+                Player.GetInstance().HealPlayer(5);
                 break;
             case (CardEffect.HeavenlyInsight):
+                chi = 1;
+                cardType = CardType.Power;
+                if (CombatManagerFacade.GetInstance().Mana < 1) break;
                 DeckManager.GetInstance().Draw();
                 DeckManager.GetInstance().Draw();
                 DeckManager.GetInstance().Draw();
-          
                 break;
             //case (CardEffect.MandateOfHeaven):
             //    break;
             case (CardEffect.SunTzusInsight):
+                chi = 1;
+                cardType = CardType.Power;
+                if (CombatManagerFacade.GetInstance().Mana < 1) break;
+                DeckManager.GetInstance().Draw();
+                DeckManager.GetInstance().Draw();
+                DeckManager.GetInstance().Draw();
+                Card tmp = new Card();
+                tmp.cardEffect = CardEffect.HeavenlyInsight;
+                DeckManager.GetInstance().AddCard(tmp);
+                chi = 1;
                 break;
             case (CardEffect.DragonStrike):
                 damage = 5;
+                chi = 1;
+                Player.GetInstance().addStrength(1);
                 break;
             case (CardEffect.HeavenSplit):
-                damage = 5;
+                chi = 1;
+                damage = 8;
                 break;
             case (CardEffect.JadeBarrier):
+                chi = 2;
+                if (CombatManagerFacade.GetInstance().Mana < 2) break;
+                Player.GetInstance().addIFrames();
+                cardType = CardType.Power;
                 break;
             //case (CardEffect.Momentum):
             //    break;
@@ -122,12 +161,21 @@ public class Card
                 chi = 0;
                 break;
             case (CardEffect.Pills):
+                cardType = CardType.Power;
+                chi = 1;
+                if (CombatManagerFacade.GetInstance().Mana < 1) break;
+                int rand = Random.Range(0, 3);
+                if (rand == 0) Player.GetInstance().TakeDamage(5);
+                if (rand == 1) Player.GetInstance().HealPlayer(3);
+                if (rand == 2) Player.GetInstance().addStrength(1);
                 break;
             case CardEffect.SubmachineGun:
                 damage = 10;
                 chi = 0;
                 break;
             case CardEffect.BuddahStrike:
+                damage = 15;
+                chi = 2;
                 break;
         }
     }
@@ -178,7 +226,7 @@ public class Card
                 //    return "Mandate of Heaven";
 
                 case CardEffect.SunTzusInsight:
-                    return "Sun Tzu’s Insight";
+                    return "Sun Tzuï¿½s Insight";
 
                 case CardEffect.DragonStrike:
                     return "Dragon Strike";
@@ -274,9 +322,16 @@ public class Card
         return chi;
     }
 
+    public string GetEffect()
+    {
+        return "Does a thing";
+    }
+
+
     public virtual void UseCard()
     {
         ResolveEffect();
-        Debug.Log($"Using card: {GetName()} with ID: {ID}");
+        Debug.Log($"Using card: {cardName} with ID: {ID}");
+        // Implement card effect logic here
     }
 }

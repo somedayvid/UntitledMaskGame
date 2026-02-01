@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9edef0148e277954081f8ef4018aa182, type: 3}
-  m_Name: mask 2
+  m_Name: 1_mask_Sun
   m_EditorClassIdentifier: 
-  maskId: mask_02
-  displayName: Tao Hong
+  maskId: sun_wukong
+  displayName: Sun_wukong
   shortDesc: 
-  icon: {fileID: 21300000, guid: e2ce826717ea5a24f877aab8d21d5eb2, type: 3}
+  icon: {fileID: 21300000, guid: df459ec9ed7cb09419bb01db0d4869cd, type: 3}

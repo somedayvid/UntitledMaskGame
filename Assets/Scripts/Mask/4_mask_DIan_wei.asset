@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9edef0148e277954081f8ef4018aa182, type: 3}
-  m_Name: mask 3
+  m_Name: 4_mask_DIan_wei
   m_EditorClassIdentifier: 
-  maskId: mask_03
-  displayName: Bao Zheng
+  maskId: dian_wei
+  displayName: Dian Wei
   shortDesc: 
-  icon: {fileID: 21300000, guid: 9c083092186d3834fbce59d67ed2ce37, type: 3}
+  icon: {fileID: 21300000, guid: 57743670c661e1c4da220c8b56e43ce5, type: 3}

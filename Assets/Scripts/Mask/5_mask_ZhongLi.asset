@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9edef0148e277954081f8ef4018aa182, type: 3}
-  m_Name: mask 6
+  m_Name: 5_mask_ZhongLi
   m_EditorClassIdentifier: 
-  maskId: mask_06
-  displayName: Guan Yu
+  maskId: zhong_kui
+  displayName: Zhong kui
   shortDesc: 
-  icon: {fileID: 21300000, guid: 665b5e124c35b7c4dbe6be17465efd2b, type: 3}
+  icon: {fileID: 21300000, guid: ec845d7dcc5472642913465a8d9a2cf1, type: 3}

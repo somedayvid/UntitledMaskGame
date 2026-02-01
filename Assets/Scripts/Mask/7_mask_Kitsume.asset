@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9edef0148e277954081f8ef4018aa182, type: 3}
-  m_Name: mask 5
+  m_Name: 7_mask_Kitsume
   m_EditorClassIdentifier: 
-  maskId: mask_05
-  displayName: Zhong Li
+  maskId: kitsune
+  displayName: Kitsune
   shortDesc: 
-  icon: {fileID: 21300000, guid: ec845d7dcc5472642913465a8d9a2cf1, type: 3}
+  icon: {fileID: 21300000, guid: 642aec080f40cc145a0dea081f46fa8a, type: 3}

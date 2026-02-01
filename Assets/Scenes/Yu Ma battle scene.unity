@@ -1883,16 +1883,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enableDebugLogs: 1
   manaCap: 5
-  manaRefillPerTurn: 8
-  startHandSize: 8
+  manaRefillPerTurn: 3
+  startHandSize: 5
   drawPerTurn: 2
-  handController: {fileID: 1703180093}
+  handController: {fileID: 1425976160}
   skiShieldGainMultiplier: 0.7
   dianWeiHpCostOnActive: 2
-  player: {fileID: 0}
-  mana: 0
-  dogActive: 0
-  internalDamageCall: 0
 --- !u!1 &623313428
 GameObject:
   m_ObjectHideFlags: 0
@@ -3258,6 +3254,7 @@ MonoBehaviour:
   player: {fileID: 1425976159}
   dummy: {fileID: 0}
   hpText: {fileID: 644671114}
+  shieldText: {fileID: 623313430}
 --- !u!114 &1204811308
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3374,7 +3371,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c9a07e93be0431241981840973d86cc1, type: 2}
   - {fileID: 11400000, guid: 100ec13aeacd790439edc9f4a687ea14, type: 2}
   - {fileID: 11400000, guid: 55b23ff4a1dc3a94d85f7220c1acff76, type: 2}
-  unlocked: 0000000101000100
+  unlocked: 0101010101010101
   queue:
   - {fileID: 11400000, guid: 02bd8acd04e717c4585f5552b308ba7b, type: 2}
   - {fileID: 11400000, guid: d7648b09ea368424e8534ce6c1114c45, type: 2}
@@ -4112,6 +4109,7 @@ MonoBehaviour:
   player: {fileID: 0}
   dummy: {fileID: 1368908023}
   hpText: {fileID: 1977357657}
+  shieldText: {fileID: 1852578665}
 --- !u!114 &1396361945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4341,6 +4339,17 @@ MonoBehaviour:
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea0a439924bea95488b12dcade34544e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1425976160 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8419456614020520099, guid: 0a5c08b1485240d44aa1596212fe5e17, type: 3}
+  m_PrefabInstance: {fileID: 1425976158}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24e7995e2d0e0464899a0ac9c246aef9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1462472015
@@ -5409,17 +5418,6 @@ Transform:
   - {fileID: 615267966}
   m_Father: {fileID: 1589033960}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1703180093 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8419456614020520099, guid: 0a5c08b1485240d44aa1596212fe5e17, type: 3}
-  m_PrefabInstance: {fileID: 1425976158}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24e7995e2d0e0464899a0ac9c246aef9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1708548231
 GameObject:
   m_ObjectHideFlags: 0
@@ -6324,13 +6322,14 @@ MonoBehaviour:
   player: {fileID: 1425976159}
   enemyBehaviours:
   - {fileID: 1368908023}
+  maskManager: {fileID: 1209907148}
   maskPanel: {fileID: 0}
   equippedMasks:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   activeMaskIndex: 0
-  cardGen: {fileID: 0}
+  combat: {fileID: 615267967}
 --- !u!1 &1977357655
 GameObject:
   m_ObjectHideFlags: 0

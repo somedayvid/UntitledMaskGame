@@ -13,13 +13,43 @@ public enum Mood
     JadeEmperor,
 }
 
+
 public class Player : MonoBehaviour
 {
+
+    public struct DamageContext
+    {
+        public int incomingDamage;
+        public bool cancelDamage;
+        public float shieldEfficiency;
+        public object source;
+    }
+
+    public delegate void BeforeTakeDamageHandler(ref DamageContext ctx);
+    public event BeforeTakeDamageHandler OnBeforeTakeDamage;
+
+    public event System.Action<int> OnAfterTakeDamage;
+
+    public struct ShieldContext
+    {
+        public int amount;     
+        public object source; 
+    }
+    public delegate void BeforeGainShieldHandler(ref ShieldContext ctx);
+    public event BeforeGainShieldHandler OnBeforeGainShield;
+
+
+
     [Header("Stats")]
     [SerializeField] private int maxHealth = 100;
     [SerializeField] private int health;
     [SerializeField] private int shield;
     [SerializeField] private int strength;
+    private int iFrames = 0;
+    public void addIFrames()
+    {
+        iFrames++;
+    }
     //Khaslana'd
     public int Health => health;
     public int MaxHealth => maxHealth;
@@ -58,6 +88,10 @@ public class Player : MonoBehaviour
     public bool IsAlive()
     {
         return health > 0;
+    }
+    public void addStrength(int amt)
+    {
+        strength += amt;
     }
 
     private float GetDamageMultiplier()
@@ -106,39 +140,62 @@ public class Player : MonoBehaviour
         }
         else if (card.cardType == CardType.Defense)
         {
-            // Use your Card.cs field (card.shield) instead of hardcoding +5
             AddShield(card.shield);
         }
         else
         {
-            // Power: Step0 does nothing yet
+
         }
 
-        // Remove from hand (Step0 behavior)
         hand.Remove(card);
 
-        // Notify systems (BattleManager rotates masks here)
         OnCardPlayed?.Invoke();
 
         return true;
     }
 
-    /// <summary>
-    /// Fixed damage pipeline: shield absorbs damage first.
-    /// </summary>
     public void TakeDamage(int rawDamage)
     {
         if (!IsAlive()) return;
         if (rawDamage <= 0) return;
+        if (iFrames > 0)
+        {
+            iFrames--;
+            return;
+        }
+        var ctx = new DamageContext
+        {
+            incomingDamage = rawDamage,
+            cancelDamage = false,
+            shieldEfficiency = 1f,
+            source = null
+        };
 
-        int damage = Mathf.RoundToInt(rawDamage * GetDamageResistMultiplier());
+        OnBeforeTakeDamage?.Invoke(ref ctx);
 
-        int absorbed = Mathf.Min(shield, damage);
-        shield -= absorbed;
+        if (ctx.cancelDamage)
+        {
+            OnAfterTakeDamage?.Invoke(0);
+            return;
+        }
+
+        int damage = ctx.incomingDamage;
+        if (damage <= 0) { OnAfterTakeDamage?.Invoke(0); return; }
+
+        // ������ �������ֻ������ԭ���ġ��۶ܡ����һ��Ч�ʲ���
+        int shieldAbsorbCap = Mathf.FloorToInt(shield * ctx.shieldEfficiency);
+        int absorbed = Mathf.Min(shieldAbsorbCap, damage);
+
+        // ��Ҫ����ʵ���ĵ�shield�����ȥ
+        int shieldSpent = (ctx.shieldEfficiency <= 0f) ? 0 : Mathf.CeilToInt(absorbed / ctx.shieldEfficiency);
+        shield = Mathf.Max(0, shield - shieldSpent);
+
         damage -= absorbed;
 
+        int hpLoss = 0;
         if (damage > 0)
         {
+            hpLoss = damage;
             health -= damage;
             if (health < 0) health = 0;
         }
@@ -146,6 +203,7 @@ public class Player : MonoBehaviour
         ActionLog.GetInstance().AddText($"[Player] Took damage. HP={health}, Shield={shield}");
         shieldNum.text = shield.ToString();
     }
+
 
     public void HealPlayer(int heal)
     {
@@ -165,5 +223,19 @@ public class Player : MonoBehaviour
         ActionLog.GetInstance().AddText($"{amount} shield gained!");
         shieldNum.text = shield.ToString();
         Debug.Log($"[Player] Gained shield. HP={health}, Shield={shield}");
+        var ctx = new ShieldContext
+        {
+            amount = amount,
+            source = null
+        };
+
+        OnBeforeGainShield?.Invoke(ref ctx);
+
+        int final = ctx.amount;
+        if (final <= 0) return;
+
+        shield += final;
+        Debug.Log($"[Player] Gained shield +{final}. HP={health}, Shield={shield}");
     }
+
 }

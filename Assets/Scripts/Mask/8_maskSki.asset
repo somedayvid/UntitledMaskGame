@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9edef0148e277954081f8ef4018aa182, type: 3}
-  m_Name: mask 7
+  m_Name: 8_maskSki
   m_EditorClassIdentifier: 
-  maskId: 'mask_07 '
-  displayName: Lu ZhiSHen
+  maskId: ski
+  displayName: Ski
   shortDesc: 
-  icon: {fileID: 21300000, guid: 8f0c367f7417baa46ac5a51754aa43d5, type: 3}
+  icon: {fileID: 21300000, guid: acff605619556c241b4433e8a3b76c7b, type: 3}
