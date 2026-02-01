@@ -11,9 +11,25 @@ using UnityEngine;
 public class CombatManagerFacade : MonoBehaviour
 {
     [Header("Economy")]
-    public int maxMana = 3;
+    public int manaCap = 5;          
+    public int manaRefillPerTurn = 3; 
     public int startHandSize = 5;
     public int drawPerTurn = 2;
+
+    public int Mana => mana;
+    public int ManaCap => manaCap;
+
+    public event Action<int, int> OnManaChanged;
+
+    private void SetMana(int value)
+    {
+        int newVal = Mathf.Clamp(value, 0, manaCap);
+        if (newVal == mana) return;
+        mana = newVal;
+        OnManaChanged?.Invoke(mana, manaCap);
+    }
+
+
 
     [Header("Ski: shield gain multiplier (less shield)")]
     [Range(0.1f, 1f)] public float skiShieldGainMultiplier = 0.7f;
@@ -86,7 +102,7 @@ public class CombatManagerFacade : MonoBehaviour
     public void OnBattleStart(MaskData[] equippedMasks, int activeMaskIndex)
     {
         ResetAllStates();
-        mana = maxMana;
+        SetMana(manaRefillPerTurn);
 
         // 初始化“外置 deck”：如果你现在项目没有 deck，我们就把「初始手牌模板」当作牌池来源。
         // 做法：把当前 hand 里的卡，转成 blueprint 丢进 deck，然后清空 hand，再抽 startHandSize。
@@ -110,7 +126,7 @@ public class CombatManagerFacade : MonoBehaviour
 
     public void OnPlayerTurnStart(MaskData[] equippedMasks, int activeMaskIndex, int turnNumber)
     {
-        mana = maxMana;
+        SetMana(manaRefillPerTurn);
 
         // ZhongKui cons：每回合塞负面卡到 discard
         if (HasMask(equippedMasks, "钟馗") || HasMaskId(equippedMasks, "zhong_kui"))
@@ -179,7 +195,8 @@ public class CombatManagerFacade : MonoBehaviour
             return false;
         }
 
-        mana -= cost;
+        SetMana(mana - cost);
+
 
         // Build action context
         var ctx = new ActionContext
@@ -462,7 +479,8 @@ public class CombatManagerFacade : MonoBehaviour
         // Kill check: if enemy reports dead after taking damage -> +2 mana
         if (zhong.anyZhongKuiEquipped && !enemy.IsAlive())
         {
-            mana = Mathf.Min(maxMana, mana + 2);
+            SetMana(mana + 2);
+
         }
     }
 
