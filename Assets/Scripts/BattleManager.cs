@@ -78,6 +78,7 @@ public class BattleManager : MonoBehaviour
 
     /// <summary>
     /// UI calls this when the player wants to play a card.
+    /// to add: if no target selected, target the first enemy
     /// </summary>
     public bool TryPlayCard(Card card, Enemy target)
     {
@@ -85,6 +86,11 @@ public class BattleManager : MonoBehaviour
         if (player == null) return false;
         if (card == null) return false;
 
+
+        if (target == null)
+        {
+            target = GetFirstAliveEnemy();
+        }
         // Player.PlayCard currently rejects if enemy is null or dead.
         bool success = player.PlayCard(card, target);
 
@@ -196,6 +202,7 @@ public class BattleManager : MonoBehaviour
     {
         foreach (var e in enemies)
         {
+            Debug.Log("[BattleManager] First enemy found!");
             if (e != null && e.IsAlive()) return e;
         }
         return null;

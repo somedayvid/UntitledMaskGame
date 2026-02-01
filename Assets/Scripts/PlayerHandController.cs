@@ -171,6 +171,7 @@ public class PlayerHandController : MonoBehaviour
         }
 
         bool success = battleManager.TryPlayCard(card, target);
+        Debug.Log("[Hand]" + card  + " to " + target);
 
         if (success)
         {
