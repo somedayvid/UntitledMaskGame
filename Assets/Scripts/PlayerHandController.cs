@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
@@ -96,7 +97,7 @@ public class PlayerHandController : MonoBehaviour
             return false;
         }
 
-        visualHand.Add(Instantiate(prefab, handTrans));
+        visualHand.Add(Instantiate(prefab, transform));
         hand.Add(card);
 
         selectedIndex = Mathf.Clamp(selectedIndex, 0, hand.Count - 1);
@@ -215,17 +216,32 @@ public class PlayerHandController : MonoBehaviour
 
     public void VisuallyMoveToDiscard()
     {
-        for(int i = visualHand.Count - 1; i > -1; i--)
+        for(int i = visualHand.Count - 1; i > 0; i--)
+        {
+            visualHand[i].GetComponent<VisualCard>().SetNewPosition(new Vector2(30, -10));
+        }
+
+        StartCoroutine(RemoveAll());
+    }
+
+    private IEnumerator RemoveAll()
+    {
+        yield return new WaitForSeconds(1);
+        for (int i = visualHand.Count - 1; i > 0; i--)
         {
             RemoveCardAt(i);
         }
+        DrawStartingHand();
     }
 
     public void EndOfTurn()
     {
+        selectedIndex = -1;
+        previousSelectedIndex = -1;
         deckManager.MoveHandToDiscard(hand);
         VisuallyMoveToDiscard();
-        DrawStartingHand();
+        selectedIndex = 1;
+        previousSelectedIndex = 1;
     }
 
     private void Update()
