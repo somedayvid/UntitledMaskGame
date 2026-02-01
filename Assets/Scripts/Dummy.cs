@@ -8,10 +8,19 @@ public class DummyEnemy : MonoBehaviour, Enemy
 {
     [SerializeField] private int maxHealth = 100;
     private int health;
+    public Player player1;
+    //Khaslana'd
+    public int Health => health;
+    public int MaxHealth => maxHealth;
 
-    private void Awake()
+    // Dummy has no shield yet
+    public int Shield => 0;
+    public int MaxShield => 1; // avoids divide-by-zero later
+
+    private void Start()
     {
         health = maxHealth;
+        ResolveAction(player1);
     }
 
     public void TakeDamage(int amount)
@@ -45,7 +54,7 @@ public class DummyEnemy : MonoBehaviour, Enemy
         if (!player.IsAlive()) return;
 
         int rng = Random.Range(0, 500);
-        int dmg = 1;
+        int dmg = 60;
         if (rng == 0) dmg = 1000; // keep your rare big hit test
 
         Debug.Log($"[DummyEnemy] Attacks player for {dmg}");

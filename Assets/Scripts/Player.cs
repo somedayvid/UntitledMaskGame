@@ -19,6 +19,13 @@ public class Player : MonoBehaviour
     [SerializeField] private int health;
     [SerializeField] private int shield;
     [SerializeField] private int strength;
+    //Khaslana'd
+    public int Health => health;
+    public int MaxHealth => maxHealth;
+
+    public int Shield => shield;
+    public int MaxShield => Mathf.Max(1, maxHealth);
+
     [Header("State")]
     [SerializeField] private Mood mood = Mood.Neutral;
 
