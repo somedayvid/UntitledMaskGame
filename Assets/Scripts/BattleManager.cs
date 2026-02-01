@@ -25,6 +25,8 @@ public class BattleManager : MonoBehaviour
         Victory,
         Defeat
     }
+    private bool battleHadAnyEnemy = false;
+
 
     [Header("Core References")]
     [SerializeField] private Player player;
@@ -80,15 +82,17 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    private void Start()
+    private IEnumerator Start()
     {
+        Debug.Log($"[BattleManager] Cached enemies: {enemies.Count}");
+
         // Bind facade once at startup
         if (combat != null)
         {
             combat.Bind(player, enemies);
             combat.OnRequestExtraTurn += () => extraTurnPending = true;
         }
-
+        yield return null;
         StartBattle();
     }
 
@@ -97,6 +101,8 @@ public class BattleManager : MonoBehaviour
         State = BattleState.Setup;
         TurnNumber = 1;
         activeMaskIndex = 0;
+        battleHadAnyEnemy = false;
+
 
         Debug.Log("=== Battle Start ===");
         Debug.Log($"ActiveMaskIndex={activeMaskIndex} | ActiveMask={GetActiveMaskName()}");
@@ -262,17 +268,24 @@ public class BattleManager : MonoBehaviour
             return;
         }
 
+        bool anyEnemyExists = false;
         bool anyEnemyAlive = false;
+
         foreach (var e in enemies)
         {
-            if (e != null && e.IsAlive())
+            if (e == null) continue;
+
+            anyEnemyExists = true;
+            if (e.IsAlive())
             {
                 anyEnemyAlive = true;
                 break;
             }
         }
 
-        if (!anyEnemyAlive)
+        if (anyEnemyExists) battleHadAnyEnemy = true;
+
+        if (battleHadAnyEnemy && !anyEnemyAlive)
         {
             cardGen.KardGen(3);
             State = BattleState.Victory;
@@ -280,6 +293,7 @@ public class BattleManager : MonoBehaviour
             ActionLog.GetInstance().AddText("=== VICTORY ===");
         }
     }
+
 
     private Enemy GetFirstAliveEnemy()
     {
