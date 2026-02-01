@@ -726,18 +726,6 @@ public class CombatManagerFacade : MonoBehaviour
                 ApplyCopiedMask_BeforePlay(copied, ref ctx);
             }
         }
-        // SunWukong COPY: if copied mask is BaoZheng, apply BaoZheng AFTER too
-        if (IsActiveWukong(equippedMasks, activeMaskIndex))
-        {
-            if (TryGetWukongCopiedMaskId(out var copied) && copied == "bao_zheng")
-            {
-                int reduce = Mathf.Max(ctx.finalCost, 1);
-                bao.pendingReduction = reduce;
-
-                DLog($"{MASK_LOG}[SunWukong->Copy] BaoZheng AFTER => pendingReduction={reduce} (applies to NEXT card), gain shield={reduce}");
-                player.AddShield(reduce);
-            }
-        }
 
         // ErLang active -> add 0-cost random card to hand each activation
         if (IsActiveMask(equippedMasks, activeMaskIndex, "¶þÀÉÉñ", "er_lang_shen"))
@@ -754,16 +742,6 @@ public class CombatManagerFacade : MonoBehaviour
             DLog($"{MASK_LOG}[BaoZheng] ACTIVE => (banish disabled)");
         }
 
-
-        // SunWukong active -> apply buffs (once per activation)
-        if (IsActiveMask(equippedMasks, activeMaskIndex, "ËïÎò¿Õ", "sun_wukong"))
-        {
-            wukong.buffActive = true;
-            wukong.inverted = false;
-            wukong.copiedMaskId = wukong.lastNonWukongMaskId;
-
-            DLog($"{MASK_LOG}[SunWukong] ACTIVE => buffActive TRUE, inverted FALSE, copiedMaskId={wukong.copiedMaskId}");
-        }
 
         // Kitsune: seed its 1-cost card once
         if (kitsune.anyKitsuneEquipped && !kitsune.kitsuneCardSeeded)
@@ -806,6 +784,19 @@ public class CombatManagerFacade : MonoBehaviour
         {
             wukong.lastNonWukongMaskId = active.maskId ?? active.displayName;
             DLog($"{MASK_LOG}[SunWukong] Record lastNonWukongMaskId => {wukong.lastNonWukongMaskId}");
+        }
+
+        // SunWukong COPY: if copied mask is BaoZheng, apply BaoZheng AFTER too
+        if (IsActiveWukong(equippedMasks, activeMaskIndex))
+        {
+            if (TryGetWukongCopiedMaskId(out var copied) && copied == "bao_zheng")
+            {
+                int reduce = Mathf.Max(ctx.finalCost, 1);
+                bao.pendingReduction = reduce;
+
+                DLog($"{MASK_LOG}[SunWukong->Copy] BaoZheng AFTER => pendingReduction={reduce} (applies to NEXT card), gain shield={reduce}");
+                player.AddShield(reduce);
+            }
         }
     }
 
