@@ -35,10 +35,10 @@ public class LevelSelector : MonoBehaviour
             {1, "Enemy Level" },
             {2, "Enemy Level" },
             {3, "Enemy Level" },
-            {4, "Card Shop" },
-            {5, "Card Shop"},
-            {6, "Mask Level" },
-            {7, "Mask Level" }
+            {4, "Enemy Level" },
+            {5, "Enemy Level" },
+            {6, "Enemy Level" },
+            {7, "Enemy Level" }
         };
 
         map = new Dictionary<int, List<LevelData>>();
@@ -199,7 +199,7 @@ public class LevelSelector : MonoBehaviour
             if (textComponent != null && levelList.ContainsKey(levelKey) )
             {
 
-                textComponent.text = levelName;
+                textComponent.text = levelName + " " + (i+1);
                 btn.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(()=>SelectLevel(levelKey) );
 
                 if (i != 0)
