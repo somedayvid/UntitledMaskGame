@@ -125,7 +125,7 @@ public class Card
             switch (cardEffect)
             {
                 case CardEffect.Null:
-                    return "�";
+                    return "?";
 
                 case CardEffect.DrunkenFist:
                     return "Drunken Fist";
@@ -186,14 +186,14 @@ public class Card
 
                 case CardEffect.Pills:
                     return "Mystic Pills";
-                default:
+                default:    
                     return "-";
             }
         }
 
     public int GetCost()
     {
-        return 1;
+        return chi;
     }
 
     public string GetEffect()

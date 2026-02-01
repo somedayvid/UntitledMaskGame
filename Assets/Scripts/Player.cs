@@ -44,6 +44,13 @@ public class Player : MonoBehaviour
     [SerializeField] private int health;
     [SerializeField] private int shield;
     [SerializeField] private int strength;
+    //Khaslana'd
+    public int Health => health;
+    public int MaxHealth => maxHealth;
+
+    public int Shield => shield;
+    public int MaxShield => Mathf.Max(1, maxHealth);
+
     [Header("State")]
     [SerializeField] private Mood mood = Mood.Neutral;
 
@@ -151,11 +158,11 @@ public class Player : MonoBehaviour
         int damage = ctx.incomingDamage;
         if (damage <= 0) { OnAfterTakeDamage?.Invoke(0); return; }
 
-        // ¡ý¡ý¡ý ÏÂÃæÕâ¶ÎÖ»ÊÇÔÚÄãÔ­±¾µÄ¡°¿Û¶Ü¡±Àï¼ÓÒ»¸öÐ§ÂÊ²ÎÊý
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½Û¶Ü¡ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ð§ï¿½Ê²ï¿½ï¿½ï¿½
         int shieldAbsorbCap = Mathf.FloorToInt(shield * ctx.shieldEfficiency);
         int absorbed = Mathf.Min(shieldAbsorbCap, damage);
 
-        // ÐèÒª°ÑÕæÊµÏûºÄµÄshield»»Ëã»ØÈ¥
+        // ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½Äµï¿½shieldï¿½ï¿½ï¿½ï¿½ï¿½È¥
         int shieldSpent = (ctx.shieldEfficiency <= 0f) ? 0 : Mathf.CeilToInt(absorbed / ctx.shieldEfficiency);
         shield = Mathf.Max(0, shield - shieldSpent);
 
@@ -169,7 +176,7 @@ public class Player : MonoBehaviour
             if (health < 0) health = 0;
         }
 
-        OnAfterTakeDamage?.Invoke(hpLoss);
+        ActionLog.GetInstance().AddText($"[Player] Took damage. HP={health}, Shield={shield}");
     }
 
 
