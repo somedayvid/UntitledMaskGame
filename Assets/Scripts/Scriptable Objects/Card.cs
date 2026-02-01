@@ -88,6 +88,9 @@ public class Card
                 cardType = CardType.Defense;
                 break;
             case (CardEffect.OrientalDaggerRitual):
+                cardType = CardType.Power;
+
+
                 Card temp = new Card();
                 temp.cardEffect = CardEffect.OrientalDagger;
                 DeckManager.GetInstance().AddCard(temp);
@@ -99,28 +102,57 @@ public class Card
                 damage = 3;
                 break;
             case (CardEffect.Meditate):
+                chi = 0;
+                CombatManagerFacade.GetInstance().addMana(1);
+                cardType = CardType.Power;
                 break;
             case (CardEffect.OrientalTigerBalm):
+                if (CombatManagerFacade.GetInstance().Mana < 2) break;
+                cardType = CardType.Power;
+                chi = 2;
+                Player.GetInstance().addStrength(2);
                 break;
             case (CardEffect.GinsengRoot):
+                chi = 1;
+                cardType = CardType.Power;
+                Player.GetInstance().HealPlayer(5);
                 break;
             case (CardEffect.HeavenlyInsight):
+                chi = 1;
+                cardType = CardType.Power;
+                if (CombatManagerFacade.GetInstance().Mana < 1) break;
                 DeckManager.GetInstance().Draw();
                 DeckManager.GetInstance().Draw();
                 DeckManager.GetInstance().Draw();
-          
                 break;
             //case (CardEffect.MandateOfHeaven):
             //    break;
             case (CardEffect.SunTzusInsight):
+                chi = 1;
+                cardType = CardType.Power;
+                if (CombatManagerFacade.GetInstance().Mana < 1) break;
+                DeckManager.GetInstance().Draw();
+                DeckManager.GetInstance().Draw();
+                DeckManager.GetInstance().Draw();
+                Card tmp = new Card();
+                tmp.cardEffect = CardEffect.HeavenlyInsight;
+                DeckManager.GetInstance().AddCard(tmp);
+                chi = 1;
                 break;
             case (CardEffect.DragonStrike):
                 damage = 5;
+                chi = 1;
+                Player.GetInstance().addStrength(1);
                 break;
             case (CardEffect.HeavenSplit):
-                damage = 5;
+                chi = 1;
+                damage = 8;
                 break;
             case (CardEffect.JadeBarrier):
+                chi = 2;
+                if (CombatManagerFacade.GetInstance().Mana < 2) break;
+                Player.GetInstance().addIFrames();
+                cardType = CardType.Power;
                 break;
             //case (CardEffect.Momentum):
             //    break;
@@ -129,12 +161,21 @@ public class Card
                 chi = 0;
                 break;
             case (CardEffect.Pills):
+                cardType = CardType.Power;
+                chi = 1;
+                if (CombatManagerFacade.GetInstance().Mana < 1) break;
+                int rand = Random.Range(0, 3);
+                if (rand == 0) Player.GetInstance().TakeDamage(5);
+                if (rand == 1) Player.GetInstance().HealPlayer(3);
+                if (rand == 2) Player.GetInstance().addStrength(1);
                 break;
             case CardEffect.SubmachineGun:
                 damage = 10;
                 chi = 0;
                 break;
             case CardEffect.BuddahStrike:
+                damage = 15;
+                chi = 2;
                 break;
         }
     }

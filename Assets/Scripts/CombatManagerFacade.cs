@@ -13,7 +13,7 @@ public class CombatManagerFacade : MonoBehaviour
     // -------------------- DEBUG --------------------
     [Header("Debug")]
     [SerializeField] private bool enableDebugLogs = true;
-
+    private static CombatManagerFacade instance;
     private void DLog(string msg)
     {
         if (!enableDebugLogs) return;
@@ -33,8 +33,14 @@ public class CombatManagerFacade : MonoBehaviour
     public event Action<int, int> OnManaChanged;
 
     [SerializeField] private PlayerHandController handController;
-
-
+    public void addMana(int amt)
+    {
+        mana += amt;
+    }
+    public static CombatManagerFacade GetInstance()
+    {
+        return instance;
+    }
     private void SetMana(int value)
     {
         int newVal = Mathf.Clamp(value, 0, manaCap);
@@ -88,7 +94,7 @@ public class CombatManagerFacade : MonoBehaviour
     private bool internalDamageCall = false;
 
     // -------------------- PUBLIC API --------------------
-
+    private void Awake() => instance = this;
     public void Bind(Player p, List<Enemy> enemyList)
     {
         player = p;
