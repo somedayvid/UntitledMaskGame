@@ -44,6 +44,6 @@ TagManager:
   - name: SelectedCard
     uniqueID: 2927456397
     locked: 0
-  - name: UI
+  - name: Character
     uniqueID: 110832005
     locked: 0
