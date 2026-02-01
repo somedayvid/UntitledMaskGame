@@ -202,7 +202,6 @@ public class Card
     }
 
 
-    }
     public virtual void UseCard()
     {
         ResolveEffect();
