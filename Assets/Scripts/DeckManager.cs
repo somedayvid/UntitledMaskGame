@@ -12,6 +12,13 @@ public class DeckManager : MonoBehaviour
     public TextMeshProUGUI discardPileCount;
     public TextMeshProUGUI combatDeckCount;
 
+    private static DeckManager instance;
+
+    public static DeckManager GetInstance()
+    {
+        return instance;
+    }
+
     void shuffle()
     {
         for (int i = tempDeck.Count - 1; i > 0; i--)
@@ -82,6 +89,7 @@ public class DeckManager : MonoBehaviour
 
     void Awake()
     {
+        instance = this;
         Card newCard = new Card();
         newCard.cardEffect = CardEffect.PalmStrike;
         AddCardMain(newCard);

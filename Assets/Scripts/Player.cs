@@ -32,6 +32,13 @@ public class Player : MonoBehaviour
     [Header("Hand")]
     public List<Card> hand = new List<Card>();
 
+    private static Player instance;
+
+    public static Player GetInstance()
+    {
+        return instance;
+    }
+
     /// <summary>
     /// Fired when a card is successfully played.
     /// </summary>
@@ -39,6 +46,7 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        instance = this;
         health = maxHealth;
         shield = 0;
         strength = 0;
